@@ -1,0 +1,319 @@
+using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Data;
+using ErnstTech.SynthesizerControls;
+using ErnstTech.DXSoundCore;
+
+namespace ErnstTech.Synthesizer
+{
+	/// <summary>
+	/// Summary description for Form1.
+	/// </summary>
+	public class Form1 : System.Windows.Forms.Form
+    {
+        private System.Windows.Forms.Button btnTestWaveStream;
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.Container components = null;
+		private System.Windows.Forms.Button btnPlay;
+		private System.Windows.Forms.Button btnStop;
+		private System.Windows.Forms.Button btnCapTest;
+		
+		private BeatLoop blLoop;
+		private System.Windows.Forms.Button btnTestSynthesis;
+        private ThinSlider testSlider;
+        private Track track1;
+        private BeatBox beatBox1;
+        private Button btnShowWaveForm;
+        private Button btnViewWaveForm;
+        WavePlayer _Player;
+
+		public Form1()
+		{
+			//
+			// Required for Windows Form Designer support
+			//
+			InitializeComponent();
+
+			blLoop = new BeatLoop();
+			this.Controls.Add( blLoop );
+			blLoop.Left = 0;
+			blLoop.Top = 0;
+
+			blLoop.SetLoopState( new byte[16]{ 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 } );
+
+			this.testSlider = new ThinSlider();
+			this.Controls.Add( this.testSlider );
+
+			this.testSlider.Left = 5;
+			this.testSlider.Top = 30;
+
+			this.testSlider.Size = new Size( 10, 100 );
+			this.testSlider.BackColor = Color.White;
+			this.testSlider.ForeColor = Color.Navy;
+
+			this.Refresh();
+		}
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		protected override void Dispose( bool disposing )
+		{
+			if ( _Player != null )
+			{
+				_Player.Stop();
+//				_Player.Dispose();
+			}
+
+			if( disposing )
+			{
+
+				if (components != null) 
+				{
+					components.Dispose();
+				}
+			}
+			base.Dispose( disposing );
+		}
+
+		#region Windows Form Designer generated code
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+            this.btnTestWaveStream = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.btnCapTest = new System.Windows.Forms.Button();
+            this.btnTestSynthesis = new System.Windows.Forms.Button();
+            this.btnShowWaveForm = new System.Windows.Forms.Button();
+            this.track1 = new ErnstTech.SynthesizerControls.Track();
+            this.beatBox1 = new ErnstTech.SynthesizerControls.BeatBox();
+            this.btnViewWaveForm = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnTestWaveStream
+            // 
+            this.btnTestWaveStream.Location = new System.Drawing.Point(112, 64);
+            this.btnTestWaveStream.Margin = new System.Windows.Forms.Padding(2, 3, 3, 3);
+            this.btnTestWaveStream.Name = "btnTestWaveStream";
+            this.btnTestWaveStream.Size = new System.Drawing.Size(112, 23);
+            this.btnTestWaveStream.TabIndex = 1;
+            this.btnTestWaveStream.Text = "Test Wave Stream";
+            this.btnTestWaveStream.Click += new System.EventHandler(this.btnTestWaveStream_Click);
+            // 
+            // btnPlay
+            // 
+            this.btnPlay.Location = new System.Drawing.Point(232, 64);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(75, 23);
+            this.btnPlay.TabIndex = 2;
+            this.btnPlay.Text = "Play";
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(320, 64);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(75, 23);
+            this.btnStop.TabIndex = 2;
+            this.btnStop.Text = "Stop";
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // btnCapTest
+            // 
+            this.btnCapTest.Location = new System.Drawing.Point(402, 64);
+            this.btnCapTest.Name = "btnCapTest";
+            this.btnCapTest.Size = new System.Drawing.Size(112, 23);
+            this.btnCapTest.TabIndex = 3;
+            this.btnCapTest.Text = "Capabilities Test";
+            this.btnCapTest.Click += new System.EventHandler(this.btnCapTest_Click);
+            // 
+            // btnTestSynthesis
+            // 
+            this.btnTestSynthesis.Location = new System.Drawing.Point(13, 64);
+            this.btnTestSynthesis.Margin = new System.Windows.Forms.Padding(3, 3, 1, 3);
+            this.btnTestSynthesis.Name = "btnTestSynthesis";
+            this.btnTestSynthesis.Size = new System.Drawing.Size(96, 23);
+            this.btnTestSynthesis.TabIndex = 4;
+            this.btnTestSynthesis.Text = "Test Synthesizer";
+            this.btnTestSynthesis.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnShowWaveForm
+            // 
+            this.btnShowWaveForm.Location = new System.Drawing.Point(13, 93);
+            this.btnShowWaveForm.Name = "btnShowWaveForm";
+            this.btnShowWaveForm.Size = new System.Drawing.Size(96, 23);
+            this.btnShowWaveForm.TabIndex = 7;
+            this.btnShowWaveForm.Text = "Show Waveform";
+            this.btnShowWaveForm.Click += new System.EventHandler(this.btnShowWaveForm_Click);
+            // 
+            // track1
+            // 
+            this.track1.BeatCount = 16;
+            this.track1.Location = new System.Drawing.Point(16, 144);
+            this.track1.Name = "track1";
+            this.track1.Size = new System.Drawing.Size(176, 144);
+            this.track1.TabIndex = 6;
+            // 
+            // beatBox1
+            // 
+            this.beatBox1.BaseFrequency = 200F;
+            this.beatBox1.Location = new System.Drawing.Point(224, 192);
+            this.beatBox1.Name = "beatBox1";
+            this.beatBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.beatBox1.SampleQuality = ErnstTech.SoundCore.AudioBits.Bits16;
+            this.beatBox1.Size = new System.Drawing.Size(480, 296);
+            this.beatBox1.TabIndex = 0;
+            // 
+            // btnViewWaveForm
+            // 
+            this.btnViewWaveForm.Location = new System.Drawing.Point(112, 93);
+            this.btnViewWaveForm.Name = "btnViewWaveForm";
+            this.btnViewWaveForm.Size = new System.Drawing.Size(112, 23);
+            this.btnViewWaveForm.TabIndex = 8;
+            this.btnViewWaveForm.Text = "View Wave Form";
+            this.btnViewWaveForm.Click += new System.EventHandler(this.btnViewWaveForm_Click);
+            // 
+            // Form1
+            // 
+            this.ClientSize = new System.Drawing.Size(712, 486);
+            this.Controls.Add(this.btnViewWaveForm);
+            this.Controls.Add(this.btnShowWaveForm);
+            this.Controls.Add(this.track1);
+            this.Controls.Add(this.btnTestSynthesis);
+            this.Controls.Add(this.btnCapTest);
+            this.Controls.Add(this.btnPlay);
+            this.Controls.Add(this.btnTestWaveStream);
+            this.Controls.Add(this.beatBox1);
+            this.Controls.Add(this.btnStop);
+            this.Name = "Form1";
+            this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.ResumeLayout(false);
+
+        }
+		#endregion
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main() 
+		{
+			Application.Run(new Form1());
+		}
+
+		private void btnTestWaveStream_Click(object sender, System.EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Title = "Open Wave Audio...";
+			ofd.Filter = "Wave Files (*.wav)|*.wav";
+			ofd.FilterIndex = 1;
+
+			if ( ofd.ShowDialog() == DialogResult.OK )
+			{
+				System.IO.FileStream stream = new System.IO.FileStream( ofd.FileName, 
+					System.IO.FileMode.Open,
+					System.IO.FileAccess.Read, System.IO.FileShare.Read, 16 * 1024 );
+
+                _Player = new WavePlayer();
+
+				//_Player = new WavePlayer( this, stream );
+				//_Player.BufferLength = 1000;
+			}
+		}
+
+		private void btnPlay_Click(object sender, System.EventArgs e)
+		{
+            _Player?.Play();
+		}
+
+		private void btnStop_Click(object sender, System.EventArgs e)
+		{
+            _Player?.Stop();
+		}
+
+		private void btnCapTest_Click(object sender, System.EventArgs e)
+		{
+//			MessageBox.Show( WavePlayer.NumDevices.ToString() );
+//
+//			WaveOutDeviceCapabilities cap = new WaveOutDeviceCapabilities( 0 );
+		}
+
+		private void button1_Click(object sender, System.EventArgs e)
+		{
+			ErnstTech.SoundCore.WaveForm form = new ErnstTech.SoundCore.WaveForm( new ErnstTech.SoundCore.WaveFormat(  2, 44100, 16 ) );
+            form.BaseFrequency = 200;
+
+			Point[] points = new Point[ this.beatBox1.Points.Count ];
+            for (int i = 0, length = points.Length; i < length; ++i)
+            {
+                PointF pt = this.beatBox1.Points[i];
+                points[i] = new Point(Convert.ToInt32(pt.X), Convert.ToInt32(pt.Y));
+            }
+
+            form.Points.AddRange( points );
+//			form.Points.Add( new Point( 0, 0 ) );
+//			form.Points.Add( new Point( 1000, 5000 ) );
+//			form.Points.Add( new Point( 5000, 0 ) );
+			System.IO.Stream s = form.GenerateWave();
+
+            _Player = new WavePlayer();
+            _Player.Play();
+
+			//WavePlayer player = new WavePlayer( this, s );
+			//player.Play();
+		}
+
+		private void Form1_Load(object sender, System.EventArgs e)
+		{
+		
+		}
+
+		private void beatLoop1_Click(object sender, System.EventArgs e)
+		{
+		
+		}
+
+        private void btnShowWaveForm_Click(object sender, EventArgs e)
+        {
+            ErnstTech.SoundCore.WaveForm form = new ErnstTech.SoundCore.WaveForm(new ErnstTech.SoundCore.WaveFormat(2, 44100, 16));
+            form.BaseFrequency = 100;
+
+            System.IO.Stream s = form.GenerateWave();
+
+            using (WaveFormView view = new WaveFormView(s))
+            {
+                view.ZoomFactor = 0.25f;
+                view.ShowDialog();
+            }
+
+            s.Close();
+        }
+
+        private void btnViewWaveForm_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    System.IO.Stream s = ofd.OpenFile();
+                    using (WaveFormView view = new WaveFormView(s))
+                    {
+                        //view.ZoomFactor = 0.25f;
+                        view.ShowDialog();
+                    }
+                    s.Close();
+                }
+            }
+        }
+	}
+}

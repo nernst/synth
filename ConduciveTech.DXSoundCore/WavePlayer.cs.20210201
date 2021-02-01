@@ -1,0 +1,197 @@
+using System;
+using System.IO;
+using System.Threading;
+
+namespace ErnstTech.DXSoundCore
+{
+	/// <summary>
+	/// Summary description for WavePlayer.
+	/// </summary>
+	public class WavePlayer
+	{
+		private Device _Device;
+		private ErnstTech.SoundCore.WaveStream _Wave;
+		private SecondaryBuffer _Buffer;
+		private MemoryStream _BufferStream;
+		private Microsoft.DirectX.DirectSound.WaveFormat _Format;
+
+		private System.Timers.Timer _Timer;
+
+		private int _BufferLength = 1000;
+		/// <summary>
+		/// The size of the buffer, in milliseconds.
+		/// </summary>
+		public int BufferLength
+		{
+			get{ return _BufferLength; }
+			set
+			{
+				if ( value < 100 )
+					throw new ErnstTech.SoundCore.SoundCoreException( "Buffer length must be at least 100 ms." );
+
+				_BufferLength = value;
+			}
+		}
+
+		private int _FillInterval = 50;
+		/// <summary>
+		/// Interval at which the buffer is topped off, in milliseconds.
+		/// </summary>
+ 		public int FillInterval
+		{
+			get{ return _FillInterval; }
+			set
+			{
+				if ( value < 50 )
+					throw new ArgumentException( "FillInterval must be at least 50 ms.", "value" );
+
+				_FillInterval = value;
+			}
+		}
+
+		/// <summary>
+		/// Size of the buffer, in bytes
+		/// </summary>
+		public int BufferSize
+		{
+			get
+			{
+				int length = Convert.ToInt32( Convert.ToDouble( BufferLength ) / 1000.0 * Convert.ToDouble( _Format.AverageBytesPerSecond ) );
+
+				if ( _Format.BlockAlign > 1 )
+				{
+					int waste = length % _Format.BlockAlign;
+
+					length += ( _Format.BlockAlign - waste );
+				}
+				return length;
+			}
+		}
+
+        public bool IsPlaying { get; private set; }
+
+		public WavePlayer( System.Windows.Forms.Control owner, Stream source )
+		{
+			if ( owner == null )
+				throw new ArgumentNullException( "owner" );
+
+			if ( source == null )
+				throw new ArgumentNullException( "source" );
+
+			if ( !source.CanRead )
+				throw new ArgumentException( "Source Stream must be readable.", "source" );
+
+			if ( !source.CanSeek )
+				throw new ArgumentException( "Source Stream must be seekable.", "source" );
+
+            this.IsPlaying = false;
+
+			_Device = new Device();
+			_Device.SetCooperativeLevel( owner, CooperativeLevel.Priority );
+			
+
+			_Wave = new ErnstTech.SoundCore.WaveStream( source );
+
+			Init();
+		}
+
+		public WavePlayer( Stream source, Device device )
+		{
+			_Device = device;
+			_Wave = new ErnstTech.SoundCore.WaveStream( source );
+
+			Init();
+		}
+
+		private void Init()
+		{
+			ErnstTech.SoundCore.WaveFormat format =  _Wave.Format;
+
+			_Format = new WaveFormat();
+			_Format.AverageBytesPerSecond = format.AverageBytesPerSecond;
+			_Format.BitsPerSample = format.BitsPerSample;
+			_Format.BlockAlign = format.BlockAlignment;
+			_Format.Channels = format.Channels;
+			_Format.FormatTag = WaveFormatTag.Pcm;
+			_Format.SamplesPerSecond = format.SamplesPerSecond;
+		}
+
+		public void Play()
+		{
+			int length = Math.Min( this.BufferSize, (int)_Wave.BaseStream.Length );
+			int headerSize = _Wave.HeaderLength;
+			int dataSize = length - headerSize;
+
+			byte[] data = new byte[length];
+		
+			_BufferStream = new MemoryStream( data );
+
+			_Wave.Format.WriteHeader( _BufferStream, dataSize );
+			
+			data = new byte[dataSize];
+			_Wave.Read( data, 0, dataSize );
+
+			_BufferStream.Write( data, 0, dataSize );
+			_BufferStream.Position = 0;
+
+			BufferDescription desc = new BufferDescription();
+			desc.BufferBytes = length;
+			desc.GlobalFocus = true;
+			desc.ControlPositionNotify = true;
+			desc.CanGetCurrentPosition = true;
+
+			_Buffer = new SecondaryBuffer( _BufferStream, desc, _Device );
+			this.IsPlaying = true;
+
+			_Timer = new System.Timers.Timer( this.FillInterval );
+			_Timer.Elapsed += new System.Timers.ElapsedEventHandler(_Timer_Elapsed);
+
+			_Buffer.Play( 0, BufferPlayFlags.Looping );
+
+			_Timer.Start();
+		}
+
+		public void Stop()
+		{
+			this.IsPlaying = false;
+			_Buffer.Stop();
+
+			if ( this._Timer != null )
+			{
+				this._Timer.Stop();
+				this._Timer.Dispose();
+			}
+
+			_Buffer.Dispose();
+		}
+
+		private int _LastWritePosition;
+		private void _Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+		{
+			if ( IsPlaying )
+			{
+				int readPos = _Buffer.PlayPosition;
+
+				if ( _LastWritePosition < readPos )
+				{
+					int length = (readPos - _LastWritePosition);
+					_Buffer.Write( this._LastWritePosition, _Wave, length, LockFlag.None );
+					_LastWritePosition += length;
+				}
+				else
+				{
+					_Buffer.Write( this._LastWritePosition, _Wave, ((int)this._BufferStream.Length - _LastWritePosition), LockFlag.None );
+					this._LastWritePosition = _Buffer.PlayPosition;
+					_Buffer.Write( 0, _Wave, this._LastWritePosition, LockFlag.None );
+				}			
+
+				if ( _Wave.Length == _Wave.Position )
+					this.IsPlaying = false;
+			}
+			else
+			{
+				_Timer.Stop();
+			}
+		}
+	}
+}

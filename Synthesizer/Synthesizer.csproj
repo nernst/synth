@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ConduciveTech.DXSoundCore\ErnstTech.DXSoundCore.csproj" />
+    <ProjectReference Include="..\ConduciveTech.Math\ErnstTech.Math.csproj" />
+    <ProjectReference Include="..\ConduciveTech.SoundCore\ErnstTech.SoundCore.csproj" />
+    <ProjectReference Include="..\SynthesizerControls\SynthesizerControls.csproj" />
+  </ItemGroup>
+
+</Project>
