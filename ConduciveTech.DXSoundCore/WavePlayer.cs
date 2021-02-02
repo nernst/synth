@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpDX.XAudio2;
+using System.Media;
+
 
 namespace ErnstTech.DXSoundCore
 {
@@ -20,9 +23,13 @@ namespace ErnstTech.DXSoundCore
             MasteringVoice = new MasteringVoice(XAudio2);
         }
 
-        public void Play()
+        public void Play(Stream stream)
         {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
 
+            var player = new SoundPlayer(stream);
+            player.Play();
         }
 
         public void Stop()
@@ -40,8 +47,6 @@ namespace ErnstTech.DXSoundCore
                     this.XAudio2.Dispose();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }

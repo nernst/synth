@@ -5,7 +5,12 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Data;
 using ErnstTech.SynthesizerControls;
+
+#if ERNST_DX_AUDIO
 using ErnstTech.DXSoundCore;
+#else
+using System.Media;
+#endif
 
 namespace ErnstTech.Synthesizer
 {
@@ -30,9 +35,13 @@ namespace ErnstTech.Synthesizer
         private BeatBox beatBox1;
         private Button btnShowWaveForm;
         private Button btnViewWaveForm;
+#if ERNST_DX_AUDIO
         WavePlayer _Player;
+#else
+        SoundPlayer _Player;
+#endif
 
-		public Form1()
+        public Form1()
 		{
 			//
 			// Required for Windows Form Designer support
@@ -56,6 +65,8 @@ namespace ErnstTech.Synthesizer
 			this.testSlider.BackColor = Color.White;
 			this.testSlider.ForeColor = Color.Navy;
 
+            this._Player = new SoundPlayer();
+
 			this.Refresh();
 		}
 
@@ -64,16 +75,15 @@ namespace ErnstTech.Synthesizer
 		/// </summary>
 		protected override void Dispose( bool disposing )
 		{
-			if ( _Player != null )
+            if( disposing )
 			{
-				_Player.Stop();
-//				_Player.Dispose();
-			}
+#if ERNST_DX_AUDIO
+#else
+                _Player?.Stop();
+                _Player?.Dispose();
+#endif
 
-			if( disposing )
-			{
-
-				if (components != null) 
+                if (components != null) 
 				{
 					components.Dispose();
 				}
@@ -81,7 +91,7 @@ namespace ErnstTech.Synthesizer
 			base.Dispose( disposing );
 		}
 
-		#region Windows Form Designer generated code
+#region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
 		/// the contents of this method with the code editor.
@@ -200,7 +210,7 @@ namespace ErnstTech.Synthesizer
             this.ResumeLayout(false);
 
         }
-		#endregion
+#endregion
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -220,15 +230,19 @@ namespace ErnstTech.Synthesizer
 
 			if ( ofd.ShowDialog() == DialogResult.OK )
 			{
-				System.IO.FileStream stream = new System.IO.FileStream( ofd.FileName, 
+				var stream = new System.IO.FileStream( ofd.FileName, 
 					System.IO.FileMode.Open,
 					System.IO.FileAccess.Read, System.IO.FileShare.Read, 16 * 1024 );
 
+#if ERNST_DX_AUDIO
                 _Player = new WavePlayer();
-
-				//_Player = new WavePlayer( this, stream );
-				//_Player.BufferLength = 1000;
-			}
+				_Player = new WavePlayer( this, stream );
+				_Player.BufferLength = 1000;
+#else
+                _Player.Stream = stream;
+                _Player.Play();
+#endif
+            }
 		}
 
 		private void btnPlay_Click(object sender, System.EventArgs e)
@@ -261,17 +275,19 @@ namespace ErnstTech.Synthesizer
             }
 
             form.Points.AddRange( points );
-//			form.Points.Add( new Point( 0, 0 ) );
-//			form.Points.Add( new Point( 1000, 5000 ) );
-//			form.Points.Add( new Point( 5000, 0 ) );
 			System.IO.Stream s = form.GenerateWave();
 
-            _Player = new WavePlayer();
-            _Player.Play();
+#if ERNST_DX_AUDIO
+            System.Diagnostics.Debug.Assert(false);
 
-			//WavePlayer player = new WavePlayer( this, s );
-			//player.Play();
-		}
+			WavePlayer player = new WavePlayer( this, s );
+			player.Play();
+#else
+            this._Player.Stop();
+            this._Player.Stream = s;
+            this._Player.Play();
+#endif
+        }
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{

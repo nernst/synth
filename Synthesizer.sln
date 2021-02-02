@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErnstTech.DXSoundCore", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ErnstTech.Math", "ConduciveTech.Math\ErnstTech.Math.csproj", "{C6D19540-76DD-4E6C-B860-1EAC4E330945}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XAudioDynSample", "XAudioDynSample\XAudioDynSample.csproj", "{F35335B3-94FA-42CB-95AF-D7D047A206C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,14 @@ Global
 		{C6D19540-76DD-4E6C-B860-1EAC4E330945}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C6D19540-76DD-4E6C-B860-1EAC4E330945}.Release|x86.ActiveCfg = Release|x86
 		{C6D19540-76DD-4E6C-B860-1EAC4E330945}.Release|x86.Build.0 = Release|x86
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Debug|x86.Build.0 = Debug|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Release|x86.ActiveCfg = Release|Any CPU
+		{F35335B3-94FA-42CB-95AF-D7D047A206C8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
