@@ -28,6 +28,7 @@ namespace PlayDynamicSound
             int numberOfSamples = bufferSize / waveFormat.BlockAlign;
             for (int i = 0; i < numberOfSamples; i++)
             {
+                // cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5
                 double vibrato = Math.Cos(2 * Math.PI * 10.0 * i / waveFormat.SampleRate);
                 float value = (float)(Math.Cos(2 * Math.PI * (220.0 + 4.0 * vibrato) * i / waveFormat.SampleRate) * 0.5);
                 dataStream.Write(value);

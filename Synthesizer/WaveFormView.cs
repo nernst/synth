@@ -263,8 +263,11 @@ namespace ErnstTech.Synthesizer
                 case 16:
                     this.ReadShortPointsFromWaveForm();
                     break;
+                case 32:
+                    this.ReadSinglePointsFromWaveForm();
+                    break;
                 default:
-                    throw new NotSupportedException( string.Format( "An unsupported sample size was encountered: {0}", this._WaveForm.Format.BitsPerSample ) );
+                    throw new NotSupportedException($"An unsupported sample size was encountered: {this._WaveForm.Format.BitsPerSample}.");
             }
         }
 
@@ -356,6 +359,11 @@ namespace ErnstTech.Synthesizer
                     this._WaveForm.ReadByte();
                 }
             }
+        }
+
+        private void ReadSinglePointsFromWaveForm()
+        {
+            throw new NotImplementedException();
         }
 
         private void txtZoomFactor_Validating(object sender, CancelEventArgs e)

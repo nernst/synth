@@ -106,6 +106,7 @@ namespace ErnstTech.SoundCore.Synthesis
                 for (int i = 1; i < children.Count; i += 2)
                 {
                     var op = children[i].GetText();
+                    var childText = children[i + 1].GetText();
                     var arg = Visit(children[i + 1]);
                     res = ComposeBinaryFunc(op, res, arg);
                 }
@@ -128,6 +129,14 @@ namespace ErnstTech.SoundCore.Synthesis
                 return base.VisitFunc(context);
             }
 
+            public override UnaryOp VisitAtom([NotNull] SynthExpressionGrammarParser.AtomContext context)
+            {
+                if (context.children.Count == 3 && context.children[0].GetText() == "(" && context.children[2].GetText() == ")")
+                    return Visit(context.children[1]);
+
+                return base.VisitAtom(context);
+            }
+
             public override Func<double, double> VisitScientific([NotNull] SynthExpressionGrammarParser.ScientificContext context)
             {
                 if (double.TryParse(context.GetText(), out var value))
@@ -146,7 +155,10 @@ namespace ErnstTech.SoundCore.Synthesis
 
             public override Func<double, double> VisitVariable([NotNull] SynthExpressionGrammarParser.VariableContext context)
             {
-                Debug.Assert(context.GetText() == "t");
+#if DEBUG
+                var text = context.GetText();
+                Debug.Assert(text == "t");
+#endif
                 return (double t) => t;
             }
 

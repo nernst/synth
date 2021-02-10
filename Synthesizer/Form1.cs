@@ -1,10 +1,8 @@
 
 using System;
 using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
-using System.Data;
 using ErnstTech.SynthesizerControls;
 
 #if ERNST_DX_AUDIO
@@ -40,6 +38,8 @@ namespace ErnstTech.Synthesizer
         private Label label1;
         private TextBox txtExpression;
         private Button btnParse;
+        private TextBox txtDuration;
+        private Label label2;
 #if ERNST_DX_AUDIO
         WavePlayer _Player;
 #else
@@ -115,6 +115,8 @@ namespace ErnstTech.Synthesizer
             this.label1 = new System.Windows.Forms.Label();
             this.txtExpression = new System.Windows.Forms.TextBox();
             this.btnParse = new System.Windows.Forms.Button();
+            this.txtDuration = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnTestWaveStream
@@ -215,6 +217,7 @@ namespace ErnstTech.Synthesizer
             this.txtExpression.Name = "txtExpression";
             this.txtExpression.Size = new System.Drawing.Size(282, 23);
             this.txtExpression.TabIndex = 10;
+            this.txtExpression.Text = "cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5";
             // 
             // btnParse
             // 
@@ -222,15 +225,34 @@ namespace ErnstTech.Synthesizer
             this.btnParse.Name = "btnParse";
             this.btnParse.Size = new System.Drawing.Size(75, 23);
             this.btnParse.TabIndex = 11;
-            this.btnParse.Text = "Parse";
+            this.btnParse.Text = "Test";
             this.btnParse.UseVisualStyleBackColor = true;
             this.btnParse.Click += new System.EventHandler(this.btnParse_Click);
+            // 
+            // txtDuration
+            // 
+            this.txtDuration.Location = new System.Drawing.Point(232, 142);
+            this.txtDuration.Name = "txtDuration";
+            this.txtDuration.Size = new System.Drawing.Size(51, 23);
+            this.txtDuration.TabIndex = 12;
+            this.txtDuration.Text = "5.0";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(289, 147);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(109, 15);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Test Duration (secs)";
             // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(712, 486);
+            this.Controls.Add(this.txtDuration);
             this.Controls.Add(this.btnParse);
             this.Controls.Add(this.txtExpression);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnViewWaveForm);
             this.Controls.Add(this.btnShowWaveForm);
@@ -372,10 +394,30 @@ namespace ErnstTech.Synthesizer
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            var parser = new ErnstTech.SoundCore.Synthesis.ExpressionParser();
+            const int sampleRate = 44100;
+            var parser = new SoundCore.Synthesis.ExpressionParser();
             var func = parser.Parse(txtExpression.Text);
+            var duration = double.Parse(this.txtDuration.Text);
+            int nSamples = (int)(sampleRate * duration);
+            var dataSize = nSamples * sizeof(float);
 
-            System.Diagnostics.Debugger.Break();
+            var format = new SoundCore.WaveFormat(1, sampleRate, 32);
+            var delta = 1.0 / sampleRate;
+
+            using (var ms = new MemoryStream(dataSize + SoundCore.WaveFormat.HeaderSize))
+            {
+                var w = new BinaryWriter(ms);
+                format.WriteHeader(ms, dataSize);
+                for (int i = 0; i < nSamples; ++i)
+                    w.Write((float)(func(i * delta)));
+
+                ms.Position = 0;
+
+                new SoundPlayer(ms).Play();
+            }
+
+
+
         }
     }
 }

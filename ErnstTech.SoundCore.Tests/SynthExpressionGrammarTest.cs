@@ -12,7 +12,7 @@ namespace ErnstTech.SoundCore.Tests
         static bool IsApproximatelyEqual(double lhs, double rhs)
         {
             return Math.Abs(lhs - rhs) <= Epsilon;
-            
+
         }
 
         readonly ExpressionParser _Parser = new ExpressionParser();
@@ -91,9 +91,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2/3");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0/3, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0/3, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0/3, func(-1)));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(0)));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(1)));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(-1)));
         }
 
         [TestMethod]
@@ -152,5 +152,15 @@ namespace ErnstTech.SoundCore.Tests
             Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(2), 2));
             Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(3.1), 1.6180339887498958));
         }
+
+        [TestMethod]
+        public void TestSubExpression()
+        {
+            string expression = "cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5";
+            var func = _Parser.Parse(expression);
+
+            Assert.IsNotNull(func);
+        }
+
     }
 }
