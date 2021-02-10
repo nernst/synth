@@ -212,18 +212,13 @@ namespace ErnstTech.SoundCore.Synthesis
 
         Func<double, double> DoParse([NotNull]string expression)
         {
-            //for (int i = 0, len = expression.Length; i < len; ++i)
-            //{
-            //    char c = expression[i];
-
-            //}
             var stream = CharStreams.fromString(expression);
             var lexer = new SynthExpressionGrammarLexer(stream);
             var tokens = new CommonTokenStream(lexer);
             var parser = new SynthExpressionGrammarParser(tokens);
             parser.BuildParseTree = true;
-            //parser.RemoveErrorListeners();
-            //parser.AddErrorListener(new ThrowingErrorListener<IToken>());
+            parser.RemoveErrorListeners();
+            parser.AddErrorListener(new ThrowingErrorListener<IToken>());
 
             IParseTree tree = parser.equation();
             var visitor = new SynthesizerGrammarVisitor();

@@ -29,7 +29,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 grammar SynthExpressionGrammar;
 
 equation
-   : expression relop expression
+   : expression (relop expression)*
    ;
 
 expression
