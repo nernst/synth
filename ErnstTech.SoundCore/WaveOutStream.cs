@@ -107,7 +107,11 @@ namespace ErnstTech.SoundCore
 			}
 		}
 
+#pragma warning disable CS0649
+		// TODO
 		private WavePlayer _Player;
+#pragma warning restore
+
 		private WaveFormat _Format;
 
 		/// <summary>

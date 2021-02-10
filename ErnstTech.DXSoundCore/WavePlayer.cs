@@ -1,4 +1,7 @@
-﻿using System;
+﻿// 'blah' is supported on 'windows'
+#pragma warning disable CA1416
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpDX.XAudio2;
 using System.Media;
-
 
 namespace ErnstTech.DXSoundCore
 {

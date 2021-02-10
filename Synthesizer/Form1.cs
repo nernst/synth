@@ -1,3 +1,4 @@
+
 using System;
 using System.Drawing;
 using System.Collections;
@@ -10,6 +11,7 @@ using ErnstTech.SynthesizerControls;
 using ErnstTech.DXSoundCore;
 #else
 using System.Media;
+#pragma warning disable CA1416
 #endif
 
 namespace ErnstTech.Synthesizer
@@ -35,6 +37,9 @@ namespace ErnstTech.Synthesizer
         private BeatBox beatBox1;
         private Button btnShowWaveForm;
         private Button btnViewWaveForm;
+        private Label label1;
+        private TextBox txtExpression;
+        private Button btnParse;
 #if ERNST_DX_AUDIO
         WavePlayer _Player;
 #else
@@ -107,6 +112,9 @@ namespace ErnstTech.Synthesizer
             this.track1 = new ErnstTech.SynthesizerControls.Track();
             this.beatBox1 = new ErnstTech.SynthesizerControls.BeatBox();
             this.btnViewWaveForm = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtExpression = new System.Windows.Forms.TextBox();
+            this.btnParse = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnTestWaveStream
@@ -192,9 +200,38 @@ namespace ErnstTech.Synthesizer
             this.btnViewWaveForm.Text = "View Wave Form";
             this.btnViewWaveForm.Click += new System.EventHandler(this.btnViewWaveForm_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(232, 94);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(89, 15);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Expression Test:";
+            // 
+            // txtExpression
+            // 
+            this.txtExpression.Location = new System.Drawing.Point(232, 113);
+            this.txtExpression.Name = "txtExpression";
+            this.txtExpression.Size = new System.Drawing.Size(282, 23);
+            this.txtExpression.TabIndex = 10;
+            // 
+            // btnParse
+            // 
+            this.btnParse.Location = new System.Drawing.Point(438, 143);
+            this.btnParse.Name = "btnParse";
+            this.btnParse.Size = new System.Drawing.Size(75, 23);
+            this.btnParse.TabIndex = 11;
+            this.btnParse.Text = "Parse";
+            this.btnParse.UseVisualStyleBackColor = true;
+            this.btnParse.Click += new System.EventHandler(this.btnParse_Click);
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(712, 486);
+            this.Controls.Add(this.btnParse);
+            this.Controls.Add(this.txtExpression);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnViewWaveForm);
             this.Controls.Add(this.btnShowWaveForm);
             this.Controls.Add(this.track1);
@@ -208,6 +245,7 @@ namespace ErnstTech.Synthesizer
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 #endregion
@@ -331,5 +369,13 @@ namespace ErnstTech.Synthesizer
                 }
             }
         }
-	}
+
+        private void btnParse_Click(object sender, EventArgs e)
+        {
+            var parser = new ErnstTech.SoundCore.Synthesis.ExpressionParser();
+            var func = parser.Parse(txtExpression.Text);
+
+            System.Diagnostics.Debugger.Break();
+        }
+    }
 }

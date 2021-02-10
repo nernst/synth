@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+
+    <TargetFramework>net5.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="WaveOutBuffer_old.cs" />
+    <Compile Remove="WavePlayer_old.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Synthesis\Expressions\SynthExpressionGrammar.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="Synthesis\Expressions\SynthExpressionGrammar.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.1" />
+    <PackageReference Include="Antlr4BuildTasks" Version="8.13.0" />
+  </ItemGroup>
+
+</Project>
