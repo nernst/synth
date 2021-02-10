@@ -55,12 +55,11 @@ atom
    : scientific
    | variable
    | constant
+   | random
    | LPAREN expression RPAREN
    ;
 
-scientific
-   : SCIENTIFIC_NUMBER
-   ;
+scientific: SCIENTIFIC_NUMBER;
 
 constant
    : PI
@@ -68,9 +67,9 @@ constant
 //   | I
    ;
 
-variable
-   : VARIABLE
-   ;
+variable: VARIABLE;
+
+random: RANDOM ;
 
 func
    : funcname LPAREN expression  RPAREN
@@ -86,6 +85,7 @@ funcname
    | LOG
    | LN
    | SQRT
+   | ADSR
    ;
 
 
@@ -101,7 +101,7 @@ ATAN: 'atan' ;
 LOG: 'log';
 LN: 'ln';
 SQRT: 'sqrt'; 
-
+ADSR: 'adsr';
 
 LPAREN
    : '('
@@ -183,6 +183,7 @@ VARIABLE
    // : VALID_ID_START VALID_ID_CHAR*
    ;
 
+RANDOM: 'rand'; 
 
 fragment VALID_ID_START
    : ('a' .. 'z') | ('A' .. 'Z') | '_'

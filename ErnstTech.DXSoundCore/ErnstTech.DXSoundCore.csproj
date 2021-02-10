@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConduciveTech.SoundCore\ErnstTech.SoundCore.csproj" />
+    <ProjectReference Include="..\ErnstTech.SoundCore\ErnstTech.SoundCore.csproj" />
   </ItemGroup>
 
 </Project>

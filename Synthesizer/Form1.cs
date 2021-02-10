@@ -40,6 +40,7 @@ namespace ErnstTech.Synthesizer
         private Button btnParse;
         private TextBox txtDuration;
         private Label label2;
+        private Button btnExprShow;
 #if ERNST_DX_AUDIO
         WavePlayer _Player;
 #else
@@ -117,6 +118,7 @@ namespace ErnstTech.Synthesizer
             this.btnParse = new System.Windows.Forms.Button();
             this.txtDuration = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.btnExprShow = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnTestWaveStream
@@ -215,13 +217,13 @@ namespace ErnstTech.Synthesizer
             // 
             this.txtExpression.Location = new System.Drawing.Point(232, 113);
             this.txtExpression.Name = "txtExpression";
-            this.txtExpression.Size = new System.Drawing.Size(282, 23);
+            this.txtExpression.Size = new System.Drawing.Size(309, 23);
             this.txtExpression.TabIndex = 10;
             this.txtExpression.Text = "cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5";
             // 
             // btnParse
             // 
-            this.btnParse.Location = new System.Drawing.Point(438, 143);
+            this.btnParse.Location = new System.Drawing.Point(483, 143);
             this.btnParse.Name = "btnParse";
             this.btnParse.Size = new System.Drawing.Size(75, 23);
             this.btnParse.TabIndex = 11;
@@ -246,9 +248,20 @@ namespace ErnstTech.Synthesizer
             this.label2.TabIndex = 9;
             this.label2.Text = "Test Duration (secs)";
             // 
+            // btnExprShow
+            // 
+            this.btnExprShow.Location = new System.Drawing.Point(402, 142);
+            this.btnExprShow.Name = "btnExprShow";
+            this.btnExprShow.Size = new System.Drawing.Size(75, 23);
+            this.btnExprShow.TabIndex = 13;
+            this.btnExprShow.Text = "Show";
+            this.btnExprShow.UseVisualStyleBackColor = true;
+            this.btnExprShow.Click += new System.EventHandler(this.btnExprShow_Click);
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(712, 486);
+            this.Controls.Add(this.btnExprShow);
             this.Controls.Add(this.txtDuration);
             this.Controls.Add(this.btnParse);
             this.Controls.Add(this.txtExpression);
@@ -392,7 +405,7 @@ namespace ErnstTech.Synthesizer
             }
         }
 
-        private void btnParse_Click(object sender, EventArgs e)
+        Stream GenerateFromExpression()
         {
             const int sampleRate = 44100;
             var parser = new SoundCore.Synthesis.ExpressionParser();
@@ -404,20 +417,24 @@ namespace ErnstTech.Synthesizer
             var format = new SoundCore.WaveFormat(1, sampleRate, 32);
             var delta = 1.0 / sampleRate;
 
-            using (var ms = new MemoryStream(dataSize + SoundCore.WaveFormat.HeaderSize))
-            {
-                var w = new BinaryWriter(ms);
-                format.WriteHeader(ms, dataSize);
-                for (int i = 0; i < nSamples; ++i)
-                    w.Write((float)(func(i * delta)));
+            var ms = new MemoryStream(dataSize + SoundCore.WaveFormat.HeaderSize);
+            var w = new BinaryWriter(ms);
+            format.WriteHeader(ms, dataSize);
+            for (int i = 0; i < nSamples; ++i)
+                w.Write((float)(func(i * delta)));
 
-                ms.Position = 0;
+            ms.Position = 0;
+            return ms;
+        }
 
-                new SoundPlayer(ms).Play();
-            }
+        private void btnParse_Click(object sender, EventArgs e) =>
+            new SoundPlayer(GenerateFromExpression()).Play();
 
-
-
+        private void btnExprShow_Click(object sender, EventArgs e)
+        {
+            using (var s = GenerateFromExpression())
+            using (var v = new WaveFormView(s))
+                v.ShowDialog();
         }
     }
 }

@@ -363,7 +363,21 @@ namespace ErnstTech.Synthesizer
 
         private void ReadSinglePointsFromWaveForm()
         {
-            throw new NotImplementedException();
+            int nChannels = this._WaveForm.Format.Channels;
+            if (nChannels != 1)
+                throw new NotSupportedException("Only 1 channel is supported, currently.");
+
+            long nSamples = this._WaveForm.NumberOfSamples;
+            this._DataPoints = new PointF[nSamples];
+
+            double rate = 1.0 / this._WaveForm.Format.SamplesPerSecond;
+            byte[] buffer = new byte[4];
+
+            for (long i = 0; i < nSamples; ++i)
+            {
+                this._WaveForm.Read(buffer);
+                this._DataPoints[i] = new PointF(Convert.ToSingle(i), BitConverter.ToSingle(buffer));
+            }
         }
 
         private void txtZoomFactor_Validating(object sender, CancelEventArgs e)

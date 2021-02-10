@@ -124,6 +124,8 @@ namespace ErnstTech.SoundCore.Synthesis
 
                 if (_FuncMap.TryGetValue(funcname, out var func))
                     return (double t) => func(arg(t));
+                else if (funcname == "adsr")
+                    return new ADSREnvelope().Adapt(arg);
 
                 Debug.Assert(false);
                 return base.VisitFunc(context);
@@ -143,6 +145,18 @@ namespace ErnstTech.SoundCore.Synthesis
                     return (double _) => value;
 
                 throw new InvalidOperationException($"Invalid literal: '{context.GetText()}'.");
+            }
+
+            public override UnaryOp VisitRandom([NotNull] SynthExpressionGrammarParser.RandomContext context)
+            {
+#if DEBUG
+                var text = context.GetText();
+                Debug.Assert(text == "rand");
+#endif
+
+                var random = new Random();
+
+                return (double _) => 2.0 * (random.NextDouble() - 0.5);
             }
 
             public override Func<double, double> VisitConstant([NotNull] SynthExpressionGrammarParser.ConstantContext context)
