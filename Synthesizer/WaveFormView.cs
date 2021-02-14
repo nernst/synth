@@ -186,8 +186,8 @@ namespace ErnstTech.Synthesizer
                 this.ShowFrequencyDomain = true;
             };
 
-            Thread fftThread = new Thread(new ThreadStart(this.CalculateFFT));
-            fftThread.Start();
+            //Thread fftThread = new Thread(new ThreadStart(this.CalculateFFT));
+            //fftThread.Start();
         }
 
         private void CalculateFFT()

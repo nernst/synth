@@ -162,5 +162,22 @@ namespace ErnstTech.SoundCore.Tests
             Assert.IsNotNull(func);
         }
 
+        [TestMethod]
+        public void TestADSREnvelope()
+        {
+            string expression = "adsr(1)";
+            var func = _Parser.Parse(expression);
+
+            Assert.IsNotNull(func);
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0), 0));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.01), 1));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.02), 0.98));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.25), 0.52));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.26), 0.5));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.27), 0.5));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.50), 0.5));
+            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.75), 0.5));
+
+        }
     }
 }
