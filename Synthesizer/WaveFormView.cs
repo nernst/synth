@@ -26,8 +26,8 @@ namespace ErnstTech.Synthesizer
         private PointF[] _PhasePoints;
         private PointF[] _ScaledPhasePoints;
 
-        private float _ZoomFactor = 1.0f;
-        public float ZoomFactor
+        private double _ZoomFactor = 1.0;
+        public double ZoomFactor
         {
             get { return this._ZoomFactor; }
             set 
@@ -163,7 +163,17 @@ namespace ErnstTech.Synthesizer
             InitializeComponent();
 
             this.panelWaveForm.Paint += new PaintEventHandler(panelWaveForm_Paint);
-            this.AutoScroll = true;
+
+            this.MouseWheel += (o, e) =>
+            {
+                var d = e.Delta / 120.0;
+                this.ZoomFactor *= d switch
+                {
+                    < 0 => 1.0 / (d * 10),
+                    > 0 => d * 10,
+                    _ => 1.0
+                };
+            };
             this.ZoomFactorChanged += delegate{
                 this.ScalePoints();
                 this.Refresh();
@@ -240,22 +250,22 @@ namespace ErnstTech.Synthesizer
                 //e.Graphics.DrawCurve(p, this._ScaledPoints);
             }
 
-            if (this.ShowFrequencyDomain)
-            {
-                this._FFTReady.WaitOne();
+            //if (this.ShowFrequencyDomain)
+            //{
+            //    this._FFTReady.WaitOne();
 
-                using (Brush b = new SolidBrush(this.MagnitudeColor))
-                using (Pen p = new Pen(b))
-                {
-                    e.Graphics.DrawLines(p, this._ScaledMagnitudePoints);
-                }
+            //    using (Brush b = new SolidBrush(this.MagnitudeColor))
+            //    using (Pen p = new Pen(b))
+            //    {
+            //        e.Graphics.DrawLines(p, this._ScaledMagnitudePoints);
+            //    }
 
-                using (Brush b = new SolidBrush(this.PhaseColor))
-                using (Pen p = new Pen(b))
-                {
-                    e.Graphics.DrawLines(p, this._ScaledPhasePoints);
-                }
-            }
+            //    using (Brush b = new SolidBrush(this.PhaseColor))
+            //    using (Pen p = new Pen(b))
+            //    {
+            //        e.Graphics.DrawLines(p, this._ScaledPhasePoints);
+            //    }
+            //}
         }
 
         private void ReadPointsFromWaveForm()
@@ -306,10 +316,11 @@ namespace ErnstTech.Synthesizer
             int height = this.panelWaveForm.ClientSize.Height;
             float vScale = height / -2.0f;      // Invert the points
             int vTranslation = height / 2;
+            float zf = (float)this.ZoomFactor;
  
             for (long idx = 0; idx < nPoints; ++idx)
             {
-                float x = Convert.ToSingle(idx) * this.ZoomFactor;
+                float x = Convert.ToSingle(idx) * zf;
 
                 this._ScaledPoints[idx] = new PointF(x,
                     Convert.ToSingle( vScale * this._DataPoints[idx].Y + vTranslation) );
