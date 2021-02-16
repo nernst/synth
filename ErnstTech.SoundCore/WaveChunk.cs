@@ -8,36 +8,17 @@ namespace ErnstTech.SoundCore
 	/// </summary>
 	public sealed class WaveChunk : Chunk
 	{
-		private FormatChunk _Format;
-		public FormatChunk Format
+        public override string ID => "WAVE";
+		public FormatChunk Format { get; init; }
+		public DataChunk WaveData { get; init; }
+
+		internal WaveChunk(byte[] data ) : base(data)
 		{
-			get{ return _Format; }
-		}
+			using var ms = new MemoryStream(Data);
+			using var reader = new BinaryReader(ms);
 
-		private DataChunk _WaveData;
-		public DataChunk WaveData
-		{
-			get{ return _WaveData; }
-		}
-
-		internal WaveChunk( string id, byte[] data ) : base( id, data )
-		{
-		}
-
-		protected override void Init()
-		{
-			if ( ID != "WAVE" )
-				throw new SoundCoreException( "Expected chunk type of 'WAVE'." );
-
-			base.Init ();
-
-			MemoryStream ms = new MemoryStream( Data );
-			BinaryReader reader = new BinaryReader( ms );
-
-			_Format = (FormatChunk)Chunk.GetChunk( reader );
-			_WaveData = (DataChunk)Chunk.GetChunk( reader );
-			
-			reader.Close();
+			Format = (FormatChunk)GetChunk(reader);
+			WaveData = (DataChunk)GetChunk(reader);
 		}
 	}
 }

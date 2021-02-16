@@ -147,6 +147,7 @@ namespace ErnstTech.SoundCore
 
 		public void Dispose()
 		{
+			this.NextBuffer?.Dispose();
 			WaveFormNative.waveOutUnprepareHeader( _DeviceHandle, ref _Header, Marshal.SizeOf( _Header ) );
 
 			_DataHandle.Free();

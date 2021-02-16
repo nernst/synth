@@ -1,6 +1,6 @@
-
 using System;
 using System.Drawing;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using ErnstTech.SynthesizerControls;
@@ -237,7 +237,7 @@ namespace ErnstTech.Synthesizer
             this.txtDuration.Name = "txtDuration";
             this.txtDuration.Size = new System.Drawing.Size(51, 23);
             this.txtDuration.TabIndex = 12;
-            this.txtDuration.Text = "5.0";
+            this.txtDuration.Text = "1.0";
             // 
             // label2
             // 
@@ -405,6 +405,15 @@ namespace ErnstTech.Synthesizer
             }
         }
 
+        static IEnumerable<float> ToEnumerable(int sampleRate, Func<double, double> func)
+        {
+            var count = 0;
+            var delta = 1.0 / sampleRate;
+
+            while (true)
+                yield return (float)func(count++ * delta);
+        }
+
         Stream GenerateFromExpression()
         {
             const int sampleRate = 44100;
@@ -415,13 +424,9 @@ namespace ErnstTech.Synthesizer
             var dataSize = nSamples * sizeof(float);
 
             var format = new SoundCore.WaveFormat(1, sampleRate, 32);
-            var delta = 1.0 / sampleRate;
 
             var ms = new MemoryStream(dataSize + SoundCore.WaveFormat.HeaderSize);
-            var w = new BinaryWriter(ms);
-            format.WriteHeader(ms, dataSize);
-            for (int i = 0; i < nSamples; ++i)
-                w.Write((float)(func(i * delta)));
+            new SoundCore.WaveWriter(ms, sampleRate).Write(nSamples, ToEnumerable(sampleRate, func));
 
             ms.Position = 0;
             return ms;
@@ -432,9 +437,10 @@ namespace ErnstTech.Synthesizer
 
         private void btnExprShow_Click(object sender, EventArgs e)
         {
-            using (var s = GenerateFromExpression())
-            using (var v = new WaveFormView(s))
-                v.ShowDialog();
+            using var s = GenerateFromExpression();
+            //using var v = new global::Synthesizer.WaveFormView2(s);
+            using var v = new WaveFormView(s);
+            v.ShowDialog();
         }
     }
 }

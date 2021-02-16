@@ -3,35 +3,21 @@ using System.IO;
 
 namespace ErnstTech.SoundCore
 {
-	/// <summary>
-	/// Summary description for RiffChunk.
-	/// </summary>
-	public sealed class RiffChunk : Chunk
-	{
-		private WaveChunk _Wave;
-		public WaveChunk Wave
-		{
-			get{ return _Wave; }
-		}
+    /// <summary>
+    /// Summary description for RiffChunk.
+    /// </summary>
+    public sealed class RiffChunk : Chunk
+    {
+        public override string ID => "RIFF";
 
-		internal RiffChunk( string id, byte[] data ) : base( id, data )
-		{
-		}
+        public WaveChunk Wave { get; init; }
 
-		protected override void Init()
-		{
-			if ( ID != "RIFF" )
-				throw new SoundCoreException( "Expected chunk of type 'RIFF'" );
+        internal RiffChunk(byte[] data) : base(data)
+        {
+            using var ms = new MemoryStream(Data);
+            using var reader = new BinaryReader(ms);
 
-			base.Init ();
-
-			MemoryStream ms = new MemoryStream( Data );
-			BinaryReader reader = new BinaryReader( ms );
-
-			_Wave = (WaveChunk)Chunk.GetChunk( reader );
-
-			reader.Close();
-		}
-
-	}
+            Wave = (WaveChunk)Chunk.GetChunk(reader);
+        }
+    }
 }

@@ -6,13 +6,9 @@ namespace ErnstTech.SoundCore
 	/// <summary>
 	/// Summary description for WaveFormNative.
 	/// </summary>
-	internal sealed class WaveFormNative
+	internal static class WaveFormNative
 	{
 		private const string WaveFormLibrary = "winmm.dll";
-
-		#region Constructors
-		private WaveFormNative(){}
-		#endregion
 
         // Import Native Library Functions
 		[DllImport(WaveFormLibrary)]

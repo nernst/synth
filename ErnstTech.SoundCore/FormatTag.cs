@@ -4,6 +4,8 @@ namespace ErnstTech.SoundCore
 {
 	/// <summary>
 	/// Adapted from Microsoft's MMReg.h in the Platform SDK
+	/// 
+	/// TODO: Verify the values. This is > 10 years old...
 	/// </summary>
 	public enum FormatTag : short
 	{

@@ -163,10 +163,9 @@ namespace ErnstTech.SoundCore
 
         private void AllocateBuffers()
         {
-            WaveOutBuffer prev = null;
             this._RootBuffer = new WaveOutBuffer(this, this._DeviceHandle, this.BufferSize);
 
-            prev = this._RootBuffer;
+            var prev = this._RootBuffer;
 
             for (int i = 1; i < this.BufferCount; i++)
             {
@@ -175,35 +174,11 @@ namespace ErnstTech.SoundCore
             }
 
             prev.NextBuffer = _RootBuffer;
-
-            //			this._Buffers = new WaveOutBuffer[ this.BufferCount ];
-            //
-            //			for ( int i = 0; i < BufferCount; i++ )
-            //				_Buffers[i] = new WaveOutBuffer( _DeviceHandle, this.BufferSize );
         }
 
         private void FreeBuffers()
         {
-            WaveOutBuffer next;
-            WaveOutBuffer current;
-
-            current = _RootBuffer.NextBuffer;
-
-            while (current != _RootBuffer)
-            {
-                next = current.NextBuffer;
-                current.Dispose();
-
-                current = next;
-            }
-
-            _RootBuffer.Dispose();
-            _RootBuffer = null;
-            //
-            //			for ( int i = 0; i < BufferCount; i++ )
-            //				_Buffers[i].Dispose();
-            //
-            //			_Buffers = null;
+            this._RootBuffer?.Dispose();
         }
 
         public void Play()

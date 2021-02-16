@@ -1,131 +1,63 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ErnstTech.SoundCore
 {
-	/// <summary>
-	/// Summary description for WaveWriter.
-	/// </summary>
-	public class WaveWriter : WaveStream
-	{
-		private Stream _BaseStream;
-		public override Stream BaseStream
-		{
-			get
-			{
-				return _BaseStream;
-			}
-		}
+    /// <summary>
+    /// </summary>
+    public class WaveWriter
+    {
+        public Stream Stream { get; init; }
+        public int SampleRate { get; init; }
 
-		private int _InitialCapacity = 4096;
-		public virtual int InitialCapacity
-		{
-			get{ return this._InitialCapacity; }
-		}
+        public WaveWriter(Stream stream, int sampleRate)
+        {
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+            if (!stream.CanWrite)
+                throw new ArgumentException("Stream must be writable.", nameof(stream));
+            if (sampleRate <= 0)
+                throw new ArgumentException("SampleRate must be positive.", nameof(sampleRate));
 
-		public override bool CanRead
-		{
-			get
-			{
-				return BaseStream.CanRead;
-			}
-		}
+            this.Stream = stream;
+            this.SampleRate = sampleRate;
+        }
 
-		public override bool CanSeek
-		{
-			get
-			{
-				return BaseStream.CanSeek;
-			}
-		}
+        /// <summary>
+        ///     Write the channels to the stream.
+        /// </summary>
+        /// <param name="length">The length of the longest channel, in number of samples.</param>
+        /// <param name="channels">The channels to be written.</param>
+        public void Write(long length, params IEnumerable<float>[] channels)
+        {
+            if (length < 0)
+                throw new ArgumentException("Length must be non-negative.", nameof(length));
+            if (channels.Length <= 0)
+                throw new ArgumentException("Must have at least one channel.");
 
-		public override bool CanWrite
-		{
-			get
-			{
-				return true;
-			}
-		}
+            var format = new WaveFormat
+            {
+                BitsPerSample = 32,
+                Channels = (short)channels.Length,
+                SamplesPerSecond = this.SampleRate
+            };
 
-		public override long Length
-		{
-			get
-			{
-				return BaseStream.Length;
-			}
-		}
+            var dataSize = (long)(length * sizeof(float) * channels.Length);
+            format.WriteHeader(this.Stream, (int)dataSize);
 
-		public override long Position
-		{
-			get
-			{
-				return BaseStream.Position;
-			}
-			set
-			{
-				BaseStream.Position = value;
-			}
-		}
+            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray();
 
-		public WaveWriter( Stream stream, WaveFormat format )
-		{
-			if ( stream == null )
-				throw new ArgumentNullException( "stream" );
-
-			if ( !stream.CanWrite )
-				throw new ArgumentException( "Stream must be writable", "stream" );
-
-			if ( format == null )
-				throw new ArgumentNullException( "format" );
-
-			_BaseStream = stream;
-			this.SetFormat( format );
-
-			Init();
-		}
-
-		public WaveWriter( int capacity, WaveFormat format )
-		{
-			this._InitialCapacity = capacity;
-
-			_BaseStream = new MemoryStream( capacity );
-
-			format.WriteHeader( BaseStream, -1 );
-
-			Init();
-		}
-
-		private void Init()
-		{
-			_BaseStream = new MemoryStream( this.InitialCapacity );
-		}
-
-		public override void Flush()
-		{
-			BaseStream.Flush();
-		}
-
-		public override long Seek(long offset, SeekOrigin origin)
-		{
-			return BaseStream.Seek( offset, origin );
-		}
-
-		public override void Write(byte[] buffer, int offset, int count)
-		{
-			BaseStream.Write( buffer, offset, count );
-		}
-
-		public override int Read(byte[] buffer, int offset, int count)
-		{
-			return BaseStream.Read( buffer, offset, count );
-		}
-
-		public override void SetLength(long value)
-		{
-			BaseStream.SetLength( value );
-		}
-
-
-
-	}
+            for (; length > 0; --length)
+            {
+                for (int i = 0; i < enumerators.Length; ++i)
+                {
+                    if (!enumerators[i]?.MoveNext() ?? false)
+                        enumerators[i] = null;
+                    this.Stream.Write(BitConverter.GetBytes(enumerators[i]?.Current ?? (float)0));
+                }
+            }
+        }
+    }
 }

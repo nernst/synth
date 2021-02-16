@@ -16,7 +16,9 @@ namespace ErnstTech.Synthesizer
 {
     public partial class WaveFormView : Form
     {
-        private WaveStream _WaveForm;
+        private Stream _Stream;
+        private WaveFormat _Format;
+        private WaveReader _Reader;
         private PointF[] _DataPoints;
         private PointF[] _ScaledPoints;
         private PointF[] _MagnitudePoints;
@@ -150,9 +152,12 @@ namespace ErnstTech.Synthesizer
         public WaveFormView(Stream waveForm)
         {
             if (waveForm == null)
-                throw new ArgumentNullException("waveForm");
+                throw new ArgumentNullException(nameof(WaveForm));
 
-            _WaveForm = new WaveStream(waveForm);
+            this._Stream = waveForm;
+            this._Reader = new WaveReader(waveForm);
+            this._Format = this._Reader.Format;
+
             this.ReadPointsFromWaveForm();
             
             InitializeComponent();
@@ -255,7 +260,7 @@ namespace ErnstTech.Synthesizer
 
         private void ReadPointsFromWaveForm()
         {
-            switch (this._WaveForm.Format.BitsPerSample)
+            switch (this._Format.BitsPerSample)
             {
                 case 8:
                     this.ReadBytePointsFromWaveForm();
@@ -267,7 +272,7 @@ namespace ErnstTech.Synthesizer
                     this.ReadSinglePointsFromWaveForm();
                     break;
                 default:
-                    throw new NotSupportedException($"An unsupported sample size was encountered: {this._WaveForm.Format.BitsPerSample}.");
+                    throw new NotSupportedException($"An unsupported sample size was encountered: {this._Format.BitsPerSample}.");
             }
         }
 
@@ -328,56 +333,33 @@ namespace ErnstTech.Synthesizer
 
         private void ReadBytePointsFromWaveForm()
         {
-            int nChannels = this._WaveForm.Format.Channels;
-            long nSamples = this._WaveForm.NumberOfSamples;
+            long nSamples = this._Reader.NumberOfSamples;
+
             this._DataPoints = new PointF[nSamples];
 
-            for (long i = 0, len = nSamples; i < len; ++i)
-            {
-                sbyte sample = (sbyte)this._WaveForm.ReadByte();
-                this._DataPoints[i] = new PointF(Convert.ToSingle(i), Convert.ToSingle(sample) / sbyte.MaxValue);
-                for (int h = 1; h < nChannels; ++h)
-                    this._WaveForm.ReadByte();
-            }
+            long i = 0;
+            foreach (var s in this._Reader.GetChannelInt8(0))
+                this._DataPoints[i++] = new PointF(Convert.ToSingle(i), Convert.ToSingle(s) / sbyte.MaxValue);
         }
 
         private void ReadShortPointsFromWaveForm()
         {
-            int nChannels = this._WaveForm.Format.Channels;
-            long nSamples = this._WaveForm.NumberOfSamples;
+            long nSamples = this._Reader.NumberOfSamples;
             this._DataPoints = new PointF[nSamples];
 
-            for (long i = 0, len = nSamples; i < len; ++i)
-            {
-                short sample = (short)this._WaveForm.ReadByte();
-                sample |= (short)(this._WaveForm.ReadByte() << 8);
-
-                this._DataPoints[i] = new PointF(Convert.ToSingle(i), Convert.ToSingle(sample) / short.MaxValue);
-                for (int h = 1; h < nChannels; ++h)
-                {
-                    this._WaveForm.ReadByte();
-                    this._WaveForm.ReadByte();
-                }
-            }
+            long i = 0;
+            foreach(var s in this._Reader.GetChannelInt16(0))
+                this._DataPoints[i++] = new PointF(Convert.ToSingle(i), Convert.ToSingle(s) / short.MaxValue);
         }
 
         private void ReadSinglePointsFromWaveForm()
         {
-            int nChannels = this._WaveForm.Format.Channels;
-            if (nChannels != 1)
-                throw new NotSupportedException("Only 1 channel is supported, currently.");
-
-            long nSamples = this._WaveForm.NumberOfSamples;
+            long nSamples = this._Reader.NumberOfSamples;
             this._DataPoints = new PointF[nSamples];
 
-            double rate = 1.0 / this._WaveForm.Format.SamplesPerSecond;
-            byte[] buffer = new byte[4];
-
-            for (long i = 0; i < nSamples; ++i)
-            {
-                this._WaveForm.Read(buffer);
-                this._DataPoints[i] = new PointF(Convert.ToSingle(i), BitConverter.ToSingle(buffer));
-            }
+            long i = 0;
+            foreach(var s in this._Reader.GetChannelFloat(0))
+                this._DataPoints[i++] = new PointF(Convert.ToSingle(i), s);
         }
 
         private void txtZoomFactor_Validating(object sender, CancelEventArgs e)

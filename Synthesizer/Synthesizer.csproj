@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ScottPlot.WinForms" Version="4.0.48" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SynthesizerControls\SynthesizerControls.csproj" />
   </ItemGroup>
 

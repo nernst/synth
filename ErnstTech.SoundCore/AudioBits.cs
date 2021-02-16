@@ -5,6 +5,7 @@ namespace ErnstTech.SoundCore
 	public enum AudioBits : short
 	{
 		Bits8 = 8,
-		Bits16 = 16
+		Bits16 = 16,
+		Bits32 = 32,
 	}
 }
