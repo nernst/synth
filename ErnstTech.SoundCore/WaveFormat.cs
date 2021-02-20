@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Text;
 
@@ -13,6 +14,14 @@ namespace ErnstTech.SoundCore
         public const int HeaderSize = 44;
 
         private WaveFormatEx _WaveFormat;
+
+        static readonly FormatTag[] _SupportedFormatTags = new[]
+        {
+            FormatTag.WAVE_FORMAT_PCM,
+            FormatTag.WAVE_FORMAT_IEEE_FLOAT,
+        };
+
+        public FormatTag FormatTag { get; set; } = FormatTag.WAVE_FORMAT_PCM;
 
         private short _Channels = 2;
         private const short MinChannels = 1;
@@ -120,9 +129,9 @@ namespace ErnstTech.SoundCore
 
             int size = ReadInt32(stream);
 
-            short code = ReadInt16(stream);
-            if (code != 1)
-                throw new SoundCoreException("Unsupported compression code. Only PCM Audio is supported");
+            this.FormatTag = (FormatTag)ReadInt16(stream);
+            if (!_SupportedFormatTags.Contains(this.FormatTag))
+                throw new SoundCoreException($"Unsupported format tag: {this.FormatTag}");
 
             this.Channels = ReadInt16(stream);
             this.SamplesPerSecond = ReadInt32(stream);
@@ -193,7 +202,7 @@ namespace ErnstTech.SoundCore
             writer.Write(_WAVE);
             writer.Write(_FMT);
             writer.Write(fmtSize);
-            writer.Write((short)0x0001);
+            writer.Write((short)this.FormatTag);
             writer.Write((short)this.Channels);
             writer.Write((int)this.SamplesPerSecond);
             writer.Write((int)this.AverageBytesPerSecond);

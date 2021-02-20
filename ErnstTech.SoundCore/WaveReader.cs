@@ -115,6 +115,9 @@ namespace ErnstTech.SoundCore
 
         public IEnumerable<float> GetChannelFloat(short channel)
         {
+            if (this.Format.FormatTag != FormatTag.WAVE_FORMAT_IEEE_FLOAT)
+                throw new SoundCoreException($"GetChannelFloat can only be used in WAVE_FORMAT_IEEE_FLOAT format.");
+
             foreach (var buf in GetEnumerator(channel))
                 yield return BitConverter.ToSingle(buf);
         }

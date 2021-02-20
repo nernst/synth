@@ -73,6 +73,9 @@ namespace ErnstTech.SoundCore.Synthesis
                 if (_FuncMap.TryGetValue(unaryOp, out var op))
                     return (double t) => op(arg(t));
 
+                if (unaryOp == "smooth")
+                    return Smoother.Wrap(8, arg);
+
                 throw new ArgumentException($"Unknown unary function: '{arg}'.");
             }
 
@@ -126,6 +129,8 @@ namespace ErnstTech.SoundCore.Synthesis
                     return (double t) => func(arg(t));
                 else if (funcname == "adsr")
                     return new ADSREnvelope().Adapt(arg);
+                else if (funcname == "smooth")
+                    return Smoother.Wrap(8, arg);
 
                 Debug.Assert(false);
                 return base.VisitFunc(context);

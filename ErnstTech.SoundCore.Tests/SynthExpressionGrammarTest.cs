@@ -9,12 +9,6 @@ namespace ErnstTech.SoundCore.Tests
     {
         const double Epsilon = 1e-6;
 
-        static bool IsApproximatelyEqual(double lhs, double rhs)
-        {
-            return Math.Abs(lhs - rhs) <= Epsilon;
-
-        }
-
         readonly ExpressionParser _Parser = new ExpressionParser();
 
         [TestMethod]
@@ -24,10 +18,10 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse(expression);
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0), 2));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.1), 2));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(2), 2));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(3.1), 2));
+            Assert.AreEqual(2, func(0), Epsilon);
+            Assert.AreEqual(2, func(0.1), Epsilon);
+            Assert.AreEqual(2, func(2), Epsilon);
+            Assert.AreEqual(2, func(3.1), Epsilon);
         }
 
         [TestMethod]
@@ -36,9 +30,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("pi");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.PI, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.PI, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.PI, func(-1)));
+            Assert.AreEqual(Math.PI, func(0), Epsilon);
+            Assert.AreEqual(Math.PI, func(1), Epsilon);
+            Assert.AreEqual(Math.PI, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -47,9 +41,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("e");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.E, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.E, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(Math.E, func(-1)));
+            Assert.AreEqual(Math.E, func(0), Epsilon);
+            Assert.AreEqual(Math.E, func(1), Epsilon);
+            Assert.AreEqual(Math.E, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -58,9 +52,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2+3");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(5, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(5, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(5, func(-1)));
+            Assert.AreEqual(5, func(0), Epsilon);
+            Assert.AreEqual(5, func(1), Epsilon);
+            Assert.AreEqual(5, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -69,9 +63,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2-3");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(-1, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(-1, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(-1, func(-1)));
+            Assert.AreEqual(-1, func(0), Epsilon);
+            Assert.AreEqual(-1, func(1), Epsilon);
+            Assert.AreEqual(-1, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -80,9 +74,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2*3");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(6, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(6, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(6, func(-1)));
+            Assert.AreEqual(6, func(0), Epsilon);
+            Assert.AreEqual(6, func(1), Epsilon);
+            Assert.AreEqual(6, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -91,9 +85,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2/3");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2.0 / 3, func(-1)));
+            Assert.AreEqual(2.0 / 3, func(0), Epsilon);
+            Assert.AreEqual(2.0 / 3, func(1), Epsilon);
+            Assert.AreEqual(2.0 / 3, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -102,9 +96,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("t");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(1, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2, func(2)));
-            Assert.IsFalse(SynthExpressionGrammarTest.IsApproximatelyEqual(1, func(2)));
+            Assert.AreEqual(1, func(1), Epsilon);
+            Assert.AreEqual(2, func(2), Epsilon);
+            Assert.AreNotEqual(1, func(2), Epsilon);
         }
 
         [TestMethod]
@@ -113,9 +107,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2+3*4");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(14, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(14, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(14, func(-1)));
+            Assert.AreEqual(14, func(0), Epsilon);
+            Assert.AreEqual(14, func(1), Epsilon);
+            Assert.AreEqual(14, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -124,9 +118,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2-3/4");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(1.25, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(1.25, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(1.25, func(-1)));
+            Assert.AreEqual(1.25, func(0), Epsilon);
+            Assert.AreEqual(1.25, func(1), Epsilon);
+            Assert.AreEqual(1.25, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -135,9 +129,9 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse("2*t");
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(0, func(0)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(2, func(1)));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(-2, func(-1)));
+            Assert.AreEqual(0, func(0), Epsilon);
+            Assert.AreEqual(2, func(1), Epsilon);
+            Assert.AreEqual(-2, func(-1), Epsilon);
         }
 
         [TestMethod]
@@ -147,10 +141,10 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse(expression);
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0), 2));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.1), 1.618033988749895));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(2), 2));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(3.1), 1.6180339887498958));
+            Assert.AreEqual(2, func(0), Epsilon);
+            Assert.AreEqual(1.618033988749895, func(0.1), Epsilon);
+            Assert.AreEqual(2, func(2), Epsilon);
+            Assert.AreEqual(1.6180339887498958, func(3.1), Epsilon);
         }
 
         [TestMethod]
@@ -169,14 +163,14 @@ namespace ErnstTech.SoundCore.Tests
             var func = _Parser.Parse(expression);
 
             Assert.IsNotNull(func);
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0), 0));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.01), 1));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.02), 0.98));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.25), 0.52));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.26), 0.5));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.27), 0.5));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.50), 0.5));
-            Assert.IsTrue(SynthExpressionGrammarTest.IsApproximatelyEqual(func(0.75), 0.5));
+            Assert.AreEqual(0, func(0), Epsilon);
+            Assert.AreEqual(1, func(0.01), Epsilon);
+            Assert.AreEqual(0.95, func(0.02), Epsilon);
+            Assert.AreEqual(0.5, func(0.25), Epsilon);
+            Assert.AreEqual(0.5, func(0.26), Epsilon);
+            Assert.AreEqual(0.5, func(0.27), Epsilon);
+            Assert.AreEqual(0, func(0.50), Epsilon);
+            Assert.AreEqual(0, func(0.75), Epsilon);
 
         }
     }

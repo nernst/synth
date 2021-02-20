@@ -86,6 +86,7 @@ funcname
    | LN
    | SQRT
    | ADSR
+   | SMOOTH
    ;
 
 
@@ -102,6 +103,7 @@ LOG: 'log';
 LN: 'ln';
 SQRT: 'sqrt'; 
 ADSR: 'adsr';
+SMOOTH: 'smooth';
 
 LPAREN
    : '('
