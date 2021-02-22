@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Synthesizer"
+        xmlns:d3="clr-namespace:InteractiveDataDisplay.WPF;assembly=InteractiveDataDisplay.WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
@@ -19,9 +20,13 @@
 
         <TextBox Grid.Row="1" Text="{Binding ExpressionText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" />
         <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <Button Content="Show" Margin="2" Padding="2" />
+            <Button Content="Show" Margin="2" Padding="2" Command="{x:Static local:MainWindow.ShowSynthCommand}" />
             <Button Content="Test" Margin="2" Padding="2" Command="{x:Static local:MainWindow.TestSynthCommand}" />
         </StackPanel>
+
+        <d3:Chart BottomTitle="Time" LeftTitle="Amplitude" Grid.Row="3">
+            <d3:LineGraph x:Name="channel1" Description="Channel 1" />
+        </d3:Chart>
 
     </Grid>
 </Window>

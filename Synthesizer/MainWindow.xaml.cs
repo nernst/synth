@@ -25,6 +25,7 @@ namespace Synthesizer
     public partial class MainWindow : Window
     {
         public static readonly RoutedCommand TestSynthCommand = new RoutedCommand("TestSynth", typeof(MainWindow));
+        public static readonly RoutedCommand ShowSynthCommand = new RoutedCommand("ShowSynth", typeof(MainWindow));
 
 
         public static readonly DependencyProperty ExpressionTextProperty = DependencyProperty.Register(
@@ -50,6 +51,10 @@ namespace Synthesizer
             this.CommandBindings.Add(new CommandBinding(TestSynthCommand,
                 new ExecutedRoutedEventHandler(TestSynthCommandExecuted),
                 new CanExecuteRoutedEventHandler(TestSynthCommandCanExecute)));
+
+            this.CommandBindings.Add(new CommandBinding(ShowSynthCommand,
+                new ExecutedRoutedEventHandler(ShowSynthCommandExecuted),
+                new CanExecuteRoutedEventHandler(ShowSynthCommandCanExecute)));
         }
 
         static IEnumerable<float> ToEnumerable(int sampleRate, Func<double, double> func)
@@ -101,6 +106,22 @@ namespace Synthesizer
                 args.CanExecute = false;
             }
         }
+
+        void ShowSynthCommandExecuted(object sender, ExecutedRoutedEventArgs args)
+        {
+            const int sampleRate = 44100;
+            var func = _Parser.Parse(this.ExpressionText);
+            var sample = Generate(sampleRate, 1.0, func);
+
+            var delta = 1.0 / sampleRate;
+            var reader = new WaveReader(sample);
+            var fmt = reader.Format;
+            var xSeries = Enumerable.Range(0, (int)reader.NumberOfSamples).Select(i => i * delta);
+            var ySeries = reader.GetChannelFloat(0).Select(x => (double)x);
+            channel1.Plot(xSeries, ySeries);
+        }
+
+        void ShowSynthCommandCanExecute(object sender, CanExecuteRoutedEventArgs args) => TestSynthCommandCanExecute(sender, args);
 
     }
 }
