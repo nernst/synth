@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ErnstTech.SoundCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,8 +9,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using ErnstTech.SoundCore;
 
 namespace Synthesizer
 {
@@ -29,7 +28,7 @@ namespace Synthesizer
 
             for (short i = 0; i < _Reader.Format.Channels; ++i)
             {
-                switch(_Reader.Format.BitsPerSample)
+                switch (_Reader.Format.BitsPerSample)
                 {
                     case 8: this.wavePlot.plt.PlotSignalConst(_Reader.GetChannelInt8(i).Select(x => (float)x).ToArray()); break;
                     case 16: this.wavePlot.plt.PlotSignalConst(_Reader.GetChannelInt16(i).Select(x => (float)x).ToArray()); break;

@@ -1,3 +1,4 @@
+
 namespace ErnstTech.Synthesizer
 {
     partial class WaveFormView

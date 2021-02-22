@@ -9,27 +9,28 @@ using ErnstTech.SynthesizerControls;
 using ErnstTech.DXSoundCore;
 #else
 using System.Media;
+
 #pragma warning disable CA1416
 #endif
 
 namespace ErnstTech.Synthesizer
 {
-	/// <summary>
-	/// Summary description for Form1.
-	/// </summary>
-	public class Form1 : System.Windows.Forms.Form
+    /// <summary>
+    /// Summary description for Form1.
+    /// </summary>
+    public class Form1 : System.Windows.Forms.Form
     {
         private System.Windows.Forms.Button btnTestWaveStream;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
-		private System.Windows.Forms.Button btnPlay;
-		private System.Windows.Forms.Button btnStop;
-		private System.Windows.Forms.Button btnCapTest;
-		
-		private BeatLoop blLoop;
-		private System.Windows.Forms.Button btnTestSynthesis;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.Container components = null;
+        private System.Windows.Forms.Button btnPlay;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnCapTest;
+
+        private BeatLoop blLoop;
+        private System.Windows.Forms.Button btnTestSynthesis;
         private ThinSlider testSlider;
         private Track track1;
         private BeatBox beatBox1;
@@ -48,62 +49,62 @@ namespace ErnstTech.Synthesizer
 #endif
 
         public Form1()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			blLoop = new BeatLoop();
-			this.Controls.Add( blLoop );
-			blLoop.Left = 0;
-			blLoop.Top = 0;
+            blLoop = new BeatLoop();
+            this.Controls.Add(blLoop);
+            blLoop.Left = 0;
+            blLoop.Top = 0;
 
-			blLoop.SetLoopState( new byte[16]{ 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 } );
+            blLoop.SetLoopState(new byte[16] { 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 });
 
-			this.testSlider = new ThinSlider();
-			this.Controls.Add( this.testSlider );
+            this.testSlider = new ThinSlider();
+            this.Controls.Add(this.testSlider);
 
-			this.testSlider.Left = 5;
-			this.testSlider.Top = 30;
+            this.testSlider.Left = 5;
+            this.testSlider.Top = 30;
 
-			this.testSlider.Size = new Size( 10, 100 );
-			this.testSlider.BackColor = Color.White;
-			this.testSlider.ForeColor = Color.Navy;
+            this.testSlider.Size = new Size(10, 100);
+            this.testSlider.BackColor = Color.White;
+            this.testSlider.ForeColor = Color.Navy;
 
             this._Player = new SoundPlayer();
 
-			this.Refresh();
-		}
+            this.Refresh();
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-            if( disposing )
-			{
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
 #if ERNST_DX_AUDIO
 #else
                 _Player?.Stop();
                 _Player?.Dispose();
 #endif
 
-                if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+                if (components != null)
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose(disposing);
+        }
 
-#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.btnTestWaveStream = new System.Windows.Forms.Button();
             this.btnPlay = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
@@ -283,29 +284,29 @@ namespace ErnstTech.Synthesizer
             this.PerformLayout();
 
         }
-#endregion
+        #endregion
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() 
-		{
-			Application.Run(new Form1());
-		}
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.Run(new Form1());
+        }
 
-		private void btnTestWaveStream_Click(object sender, System.EventArgs e)
-		{
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.Title = "Open Wave Audio...";
-			ofd.Filter = "Wave Files (*.wav)|*.wav";
-			ofd.FilterIndex = 1;
+        private void btnTestWaveStream_Click(object sender, System.EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Title = "Open Wave Audio...";
+            ofd.Filter = "Wave Files (*.wav)|*.wav";
+            ofd.FilterIndex = 1;
 
-			if ( ofd.ShowDialog() == DialogResult.OK )
-			{
-				var stream = new System.IO.FileStream( ofd.FileName, 
-					System.IO.FileMode.Open,
-					System.IO.FileAccess.Read, System.IO.FileShare.Read, 16 * 1024 );
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                var stream = new System.IO.FileStream(ofd.FileName,
+                    System.IO.FileMode.Open,
+                    System.IO.FileAccess.Read, System.IO.FileShare.Read, 16 * 1024);
 
 #if ERNST_DX_AUDIO
                 _Player = new WavePlayer();
@@ -316,39 +317,39 @@ namespace ErnstTech.Synthesizer
                 _Player.Play();
 #endif
             }
-		}
+        }
 
-		private void btnPlay_Click(object sender, System.EventArgs e)
-		{
+        private void btnPlay_Click(object sender, System.EventArgs e)
+        {
             _Player?.Play();
-		}
+        }
 
-		private void btnStop_Click(object sender, System.EventArgs e)
-		{
+        private void btnStop_Click(object sender, System.EventArgs e)
+        {
             _Player?.Stop();
-		}
+        }
 
-		private void btnCapTest_Click(object sender, System.EventArgs e)
-		{
-//			MessageBox.Show( WavePlayer.NumDevices.ToString() );
-//
-//			WaveOutDeviceCapabilities cap = new WaveOutDeviceCapabilities( 0 );
-		}
+        private void btnCapTest_Click(object sender, System.EventArgs e)
+        {
+            //			MessageBox.Show( WavePlayer.NumDevices.ToString() );
+            //
+            //			WaveOutDeviceCapabilities cap = new WaveOutDeviceCapabilities( 0 );
+        }
 
-		private void button1_Click(object sender, System.EventArgs e)
-		{
-			ErnstTech.SoundCore.WaveForm form = new ErnstTech.SoundCore.WaveForm( new ErnstTech.SoundCore.WaveFormat(  2, 44100, 16 ) );
+        private void button1_Click(object sender, System.EventArgs e)
+        {
+            ErnstTech.SoundCore.WaveForm form = new ErnstTech.SoundCore.WaveForm(new ErnstTech.SoundCore.WaveFormat(2, 44100, 16));
             form.BaseFrequency = 200;
 
-			Point[] points = new Point[ this.beatBox1.Points.Count ];
+            Point[] points = new Point[this.beatBox1.Points.Count];
             for (int i = 0, length = points.Length; i < length; ++i)
             {
                 PointF pt = this.beatBox1.Points[i];
                 points[i] = new Point(Convert.ToInt32(pt.X), Convert.ToInt32(pt.Y));
             }
 
-            form.Points.AddRange( points );
-			System.IO.Stream s = form.GenerateWave();
+            form.Points.AddRange(points);
+            System.IO.Stream s = form.GenerateWave();
 
 #if ERNST_DX_AUDIO
             System.Diagnostics.Debug.Assert(false);
@@ -362,15 +363,15 @@ namespace ErnstTech.Synthesizer
 #endif
         }
 
-		private void Form1_Load(object sender, System.EventArgs e)
-		{
-		
-		}
+        private void Form1_Load(object sender, System.EventArgs e)
+        {
 
-		private void beatLoop1_Click(object sender, System.EventArgs e)
-		{
-		
-		}
+        }
+
+        private void beatLoop1_Click(object sender, System.EventArgs e)
+        {
+
+        }
 
         private void btnShowWaveForm_Click(object sender, EventArgs e)
         {

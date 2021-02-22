@@ -1,16 +1,16 @@
+using ErnstTech.Math;
+using ErnstTech.SoundCore;
+using ErnstTech.Synthesizer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.Numerics;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using ErnstTech.Math;
-using ErnstTech.Synthesizer;
-using ErnstTech.SoundCore;
-using System.IO;
-using System.Numerics;
 
 namespace ErnstTech.Synthesizer
 {
@@ -30,8 +30,8 @@ namespace ErnstTech.Synthesizer
         public double ZoomFactor
         {
             get { return this._ZoomFactor; }
-            set 
-            { 
+            set
+            {
                 value = System.Math.Abs(value);
                 if (value == 0.0f)
                     value = 1.0f;
@@ -159,7 +159,7 @@ namespace ErnstTech.Synthesizer
             this._Format = this._Reader.Format;
 
             this.ReadPointsFromWaveForm();
-            
+
             InitializeComponent();
 
             this.panelWaveForm.Paint += new PaintEventHandler(panelWaveForm_Paint);
@@ -174,7 +174,8 @@ namespace ErnstTech.Synthesizer
                     _ => 1.0
                 };
             };
-            this.ZoomFactorChanged += delegate{
+            this.ZoomFactorChanged += delegate
+            {
                 this.ScalePoints();
                 this.Refresh();
             };
@@ -210,7 +211,7 @@ namespace ErnstTech.Synthesizer
             long nPoints = this._DataPoints.LongLength;
             Complex[] data = new Complex[nPoints];
             for (long i = 0; i < nPoints; ++i)
-                data[i] = new Complex(Convert.ToDouble(i), this._DataPoints[i].Y );
+                data[i] = new Complex(Convert.ToDouble(i), this._DataPoints[i].Y);
 
             ErnstTech.Math.FastFourierTransform.Transform(1, data);
 
@@ -317,20 +318,20 @@ namespace ErnstTech.Synthesizer
             float vScale = height / -2.0f;      // Invert the points
             int vTranslation = height / 2;
             float zf = (float)this.ZoomFactor;
- 
+
             for (long idx = 0; idx < nPoints; ++idx)
             {
                 float x = Convert.ToSingle(idx) * zf;
 
                 this._ScaledPoints[idx] = new PointF(x,
-                    Convert.ToSingle( vScale * this._DataPoints[idx].Y + vTranslation) );
+                    Convert.ToSingle(vScale * this._DataPoints[idx].Y + vTranslation));
 
                 if (this.ShowFrequencyDomain)
                 {
                     this._ScaledMagnitudePoints[idx] = new PointF(x,
                         Convert.ToSingle(vScale * this._MagnitudePoints[idx].Y + vTranslation));
                     this._ScaledPhasePoints[idx] = new PointF(x,
-                        Convert.ToSingle(vScale * this._PhasePoints[idx].Y + vTranslation ));
+                        Convert.ToSingle(vScale * this._PhasePoints[idx].Y + vTranslation));
                 }
             }
         }
@@ -359,7 +360,7 @@ namespace ErnstTech.Synthesizer
             this._DataPoints = new PointF[nSamples];
 
             long i = 0;
-            foreach(var s in this._Reader.GetChannelInt16(0))
+            foreach (var s in this._Reader.GetChannelInt16(0))
                 this._DataPoints[i++] = new PointF(Convert.ToSingle(i), Convert.ToSingle(s) / short.MaxValue);
         }
 
@@ -369,7 +370,7 @@ namespace ErnstTech.Synthesizer
             this._DataPoints = new PointF[nSamples];
 
             long i = 0;
-            foreach(var s in this._Reader.GetChannelFloat(0))
+            foreach (var s in this._Reader.GetChannelFloat(0))
                 this._DataPoints[i++] = new PointF(Convert.ToSingle(i), s);
         }
 
