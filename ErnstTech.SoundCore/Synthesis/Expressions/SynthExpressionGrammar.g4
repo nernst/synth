@@ -87,6 +87,8 @@ funcname
    | SQRT
    | ADSR
    | SMOOTH
+   | SAW
+   | TRI
    ;
 
 
@@ -104,6 +106,8 @@ LN: 'ln';
 SQRT: 'sqrt'; 
 ADSR: 'adsr';
 SMOOTH: 'smooth';
+SAW: 'saw';
+TRI: 'tri';
 
 LPAREN
    : '('

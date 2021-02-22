@@ -20,7 +20,7 @@ namespace ErnstTech.SoundCore.Synthesis
             Array.Fill(_Samples, 0.0);
         }
 
-        double Sample(double value)
+        public double Sample(double value)
         {
             _Samples[_Index] = value;
             _Index = (_Index + 1) % _Samples.Length;

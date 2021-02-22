@@ -92,6 +92,7 @@ namespace ErnstTech.SoundCore.Tests
             ms.Position = 0;
 
             var reader = new WaveReader(ms);
+            Assert.AreEqual(reader.Format.FormatTag, FormatTag.WAVE_FORMAT_IEEE_FLOAT);
             Assert.AreEqual(reader.Format.Channels, 1);
             Assert.AreEqual(reader.Format.SamplesPerSecond, samplesPerSecond);
             Assert.AreEqual(reader.Format.BitsPerSample, 32);

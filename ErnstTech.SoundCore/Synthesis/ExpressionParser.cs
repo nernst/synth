@@ -53,6 +53,8 @@ namespace ErnstTech.SoundCore.Synthesis
                 { "log", Math.Log10 },
                 { "ln", Math.Log },
                 { "abs", Math.Abs },
+                { "saw", Waves.Saw },
+                { "tri", Waves.Tri },
             };
 
             IReadOnlyDictionary<string, BinaryOp> _BinaryOps = new Dictionary<string, BinaryOp>()
@@ -109,7 +111,7 @@ namespace ErnstTech.SoundCore.Synthesis
                 for (int i = 1; i < children.Count; i += 2)
                 {
                     var op = children[i].GetText();
-                    var childText = children[i + 1].GetText();
+//                    var childText = children[i + 1].GetText();
                     var arg = Visit(children[i + 1]);
                     res = ComposeBinaryFunc(op, res, arg);
                 }
@@ -130,7 +132,7 @@ namespace ErnstTech.SoundCore.Synthesis
                 else if (funcname == "adsr")
                     return new ADSREnvelope().Adapt(arg);
                 else if (funcname == "smooth")
-                    return Smoother.Wrap(8, arg);
+                    return Smoother.Wrap(32, arg);
 
                 Debug.Assert(false);
                 return base.VisitFunc(context);
@@ -180,38 +182,6 @@ namespace ErnstTech.SoundCore.Synthesis
 #endif
                 return (double t) => t;
             }
-
-            //public override Func<double, double> VisitMultiplyingExpression([NotNull] SynthExpressionGrammarParser.MultiplyingExpressionContext context)
-            //{
-            //    var lhs = Visit(context.powExpression(0));
-
-            //    if (context.ChildCount <= 1)
-            //        return lhs;
-
-            //    // TODO: Need to aggregate.
-            //    if (context.ChildCount != 3)
-            //    {
-            //        Debug.WriteLine(context.GetText());
-            //    }
-
-            //    Debug.Assert(context.ChildCount == 3);
-            //    var token = context.GetChild(1).GetText();
-            //    var rhs = Visit(context.powExpression(1));
-
-            //    switch(token)
-            //    {
-            //        case "*":
-            //            return (double t) => lhs(t) * rhs(t);
-
-            //        case "/":
-            //            return (double t) => lhs(t) / rhs(t);
-
-            //        default:
-            //            break;
-            //    }
-
-            //    return base.VisitMultiplyingExpression(context);
-            //}
 
         }
 

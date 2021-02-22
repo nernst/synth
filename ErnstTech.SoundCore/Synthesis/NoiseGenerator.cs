@@ -30,6 +30,8 @@ namespace ErnstTech.SoundCore.Synthesis
             return 2.0 * (this._Random.NextDouble() - 0.5);
         }
 
+        public Func<double, double> Adapt() => (double _) => Sample();
+
         public double[] Generate(long nSamples)
         {
             return this.Take((int)nSamples).ToArray();

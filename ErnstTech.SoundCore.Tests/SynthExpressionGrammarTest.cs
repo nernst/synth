@@ -173,5 +173,37 @@ namespace ErnstTech.SoundCore.Tests
             Assert.AreEqual(0, func(0.75), Epsilon);
 
         }
+
+        [TestMethod]
+        public void TestSawWave()
+        {
+            string expression = "saw(t)";
+            var func = _Parser.Parse(expression);
+
+            Assert.IsNotNull(func);
+            Assert.AreEqual(-1.0, func(0.0), Epsilon);
+            Assert.AreEqual(1.0, func(0.999_999_999), Epsilon);
+            Assert.AreEqual(0.0, func(0.5), Epsilon);
+            Assert.AreEqual(-1.0, func(1.0), Epsilon);
+            Assert.AreEqual(1.0, func(1.999_999_999), Epsilon);
+            Assert.AreEqual(0.0, func(1.5), Epsilon);
+        }
+
+        [TestMethod]
+        public void TestTriWave()
+        {
+            string expression = "tri(t)";
+            var func = _Parser.Parse(expression);
+
+            Assert.IsNotNull(func);
+            Assert.AreEqual(-1.0, func(0.0), Epsilon);
+            Assert.AreEqual(1.0, func(0.50), Epsilon);
+            Assert.AreEqual(0.0, func(0.25), Epsilon);
+            Assert.AreEqual(0.0, func(0.75), Epsilon);
+            Assert.AreEqual(-1.0, func(1.0), Epsilon);
+            Assert.AreEqual(1.0, func(1.50), Epsilon);
+            Assert.AreEqual(0.0, func(1.25), Epsilon);
+            Assert.AreEqual(0.0, func(1.75), Epsilon);
+        }
     }
 }
