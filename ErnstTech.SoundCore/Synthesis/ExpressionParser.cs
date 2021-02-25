@@ -133,6 +133,8 @@ namespace ErnstTech.SoundCore.Synthesis
                     return new ADSREnvelope().Adapt(arg);
                 else if (funcname == "smooth")
                     return Smoother.Wrap(32, arg);
+                else if (funcname == "square")
+                    return new SquareWave(0.5).Adapt(arg);
 
                 Debug.Assert(false);
                 return base.VisitFunc(context);

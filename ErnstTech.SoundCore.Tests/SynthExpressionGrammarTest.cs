@@ -205,5 +205,19 @@ namespace ErnstTech.SoundCore.Tests
             Assert.AreEqual(0.0, func(1.25), Epsilon);
             Assert.AreEqual(0.0, func(1.75), Epsilon);
         }
+
+        [TestMethod]
+        public void TestSquareWave()
+        {
+            string expresion = "square(t)";
+            var func = _Parser.Parse(expresion);
+
+            Assert.IsNotNull(func);
+            Assert.AreEqual(1.0, func(0.0), Epsilon);
+            Assert.AreEqual(1.0, func(0.25), Epsilon);
+            Assert.AreEqual(1.0, func(0.5), Epsilon);
+            Assert.AreEqual(0.0, func(0.51), Epsilon);
+            Assert.AreEqual(0.0, func(0.9999), Epsilon);
+        }
     }
 }

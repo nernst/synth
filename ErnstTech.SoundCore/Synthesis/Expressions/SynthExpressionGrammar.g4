@@ -89,6 +89,7 @@ funcname
    | SMOOTH
    | SAW
    | TRI
+   | SQUARE
    ;
 
 
@@ -108,6 +109,7 @@ ADSR: 'adsr';
 SMOOTH: 'smooth';
 SAW: 'saw';
 TRI: 'tri';
+SQUARE: 'square';
 
 LPAREN
    : '('
