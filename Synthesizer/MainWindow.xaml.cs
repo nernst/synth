@@ -55,6 +55,8 @@ namespace Synthesizer
             this.CommandBindings.Add(new CommandBinding(ShowSynthCommand,
                 new ExecutedRoutedEventHandler(ShowSynthCommandExecuted),
                 new CanExecuteRoutedEventHandler(ShowSynthCommandCanExecute)));
+
+            drumControl.DataContext = new Views.DrumView();
         }
 
         static IEnumerable<float> ToEnumerable(int sampleRate, Func<double, double> func)

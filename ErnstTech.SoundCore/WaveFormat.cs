@@ -43,7 +43,8 @@ namespace ErnstTech.SoundCore
                                                                    8000,
                                                                    11025,
                                                                    22050,
-                                                                   44100
+                                                                   44100,
+                                                                   48000,
                                                                };
 
         private int _SamplesPerSecond = 44100;

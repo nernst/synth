@@ -22,7 +22,7 @@ namespace ErnstTech.SoundCore.Synthesis
         {
             time -= Math.Truncate(time);
 
-            return time <= DutyCycle ? 1.0 : 0.0;
+            return time <= DutyCycle ? 1.0 : -1.0;
         }
 
         public Func<double, double> Adapt() => Sample;

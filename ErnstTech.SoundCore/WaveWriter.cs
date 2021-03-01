@@ -130,5 +130,15 @@ namespace ErnstTech.SoundCore
                 }
             }
         }
+
+        public static Stream Write(int sampleRate, int numSamples, Func<double, double> func)
+        {
+            var ms = new MemoryStream();
+            var writer = new WaveWriter(ms, sampleRate);
+            var samples = Enumerable.Range(0, numSamples).Select(i => (float)func(i / (double)sampleRate));
+            writer.Write(numSamples, samples);
+            ms.Position = 0;
+            return ms;
+        }
     }
 }

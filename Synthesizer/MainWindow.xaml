@@ -4,12 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Synthesizer"
+        xmlns:controls="clr-namespace:Synthesizer.Controls"
         xmlns:d3="clr-namespace:InteractiveDataDisplay.WPF;assembly=InteractiveDataDisplay.WPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
         <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -24,8 +27,12 @@
             <Button Content="Test" Margin="2" Padding="2" Command="{x:Static local:MainWindow.TestSynthCommand}" />
         </StackPanel>
 
-        <d3:Chart BottomTitle="Time" LeftTitle="Amplitude" Grid.Row="3" x:Name="synthChart">
-            <d3:LineGraph x:Name="channel1" Description="Channel 1" />
+        <controls:DrumControl Grid.Row="3" x:Name="drumControl" />
+
+        <controls:BaseDrumControl Grid.Row="4" x:Name="baseDrumControl" />
+
+        <d3:Chart BottomTitle="Time" LeftTitle="Amplitude" Grid.Row="5" x:Name="synthChart">
+            <d3:LineGraph x:Name="channel1" Description="Channel 1" IsAutoFitEnabled="False" />
         </d3:Chart>
 
     </Grid>

@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="Synthesizer.Controls.DrumControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Synthesizer.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Column="0" Grid.Row="0" Content="Base Frequency" />
+        <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=BaseFrequency}" />
+
+        <Label Grid.Column="0" Grid.Row="1" Content="Phase Shift 1" />
+        <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=PhaseShift1}" />
+        
+        <Label Grid.Column="0" Grid.Row="2" Content="Phase Shift 2" />
+        <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Path=PhaseShift2}" />
+        
+        <Label Grid.Column="0" Grid.Row="3" Content="Attack Time" />
+        <TextBox Grid.Column="1" Grid.Row="3" Text="{Binding Path=AttackTime}" />
+        
+        <Label Grid.Column="0" Grid.Row="4" Content="Decay Time" />
+        <TextBox Grid.Column="1" Grid.Row="4" Text="{Binding Path=DecayTime}" />
+        
+        <Label Grid.Column="0" Grid.Row="5" Content="Sustain Height" />
+        <TextBox Grid.Column="1" Grid.Row="5" Text="{Binding Path=SustainHeight}" />
+        
+        <Label Grid.Column="0" Grid.Row="6" Content="Sustain Time" />
+        <TextBox Grid.Column="1" Grid.Row="6" Text="{Binding Path=SustainTime}" />
+        
+        <Label Grid.Column="0" Grid.Row="7" Content="Release Time" />
+        <TextBox Grid.Column="1" Grid.Row="7" Text="{Binding Path=BaseFrequency}" />
+        
+        <Label Grid.Column="0" Grid.Row="8" Content="Sample Rate" />
+        <TextBox Grid.Column="1" Grid.Row="8" Text="{Binding SampleRate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DrumControl}}}" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="9">
+            <Button Padding="2" Margin="2" Content="Show" Command="{x:Static local:DrumControl.ShowCommand}" />
+            <Button Padding="2" Margin="2" Content="Test" Command="{x:Static local:DrumControl.PlayCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

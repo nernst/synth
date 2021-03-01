@@ -216,8 +216,13 @@ namespace ErnstTech.SoundCore.Tests
             Assert.AreEqual(1.0, func(0.0), Epsilon);
             Assert.AreEqual(1.0, func(0.25), Epsilon);
             Assert.AreEqual(1.0, func(0.5), Epsilon);
-            Assert.AreEqual(0.0, func(0.51), Epsilon);
-            Assert.AreEqual(0.0, func(0.9999), Epsilon);
+            Assert.AreEqual(-1.0, func(0.51), Epsilon);
+            Assert.AreEqual(-1.0, func(0.9999), Epsilon);
+            Assert.AreEqual(1.0, func(1.0), Epsilon);
+            Assert.AreEqual(1.0, func(1.25), Epsilon);
+            Assert.AreEqual(1.0, func(1.5), Epsilon);
+            Assert.AreEqual(-1.0, func(1.51), Epsilon);
+            Assert.AreEqual(-1.0, func(1.9999), Epsilon);
         }
     }
 }
