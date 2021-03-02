@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="Synthesizer.Controls.BeatControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Synthesizer.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="80">
+    <Grid>
+        <Button Command="{x:Static local:BeatControl.ToggleStateCommand}" Height="20" Width="20"
+                Background="{Binding BeatColor, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BeatControl}}}"/>
+    </Grid>
+</UserControl>
