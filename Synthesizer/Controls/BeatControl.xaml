@@ -8,6 +8,6 @@
              d:DesignHeight="80" d:DesignWidth="80">
     <Grid>
         <Button Command="{x:Static local:BeatControl.ToggleStateCommand}" Height="20" Width="20"
-                Background="{Binding BeatColor, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BeatControl}}}"/>
+                Background="{Binding BeatBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:BeatControl}}}"/>
     </Grid>
 </UserControl>

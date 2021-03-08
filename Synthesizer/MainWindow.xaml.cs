@@ -26,6 +26,7 @@ namespace Synthesizer
     {
         public static readonly RoutedCommand TestSynthCommand = new RoutedCommand("TestSynth", typeof(MainWindow));
         public static readonly RoutedCommand ShowSynthCommand = new RoutedCommand("ShowSynth", typeof(MainWindow));
+        public static readonly RoutedCommand TestLoopCommand = new RoutedCommand("TestLoop", typeof(MainWindow));
 
 
         public static readonly DependencyProperty ExpressionTextProperty = DependencyProperty.Register(
@@ -43,6 +44,10 @@ namespace Synthesizer
 
         static readonly ExpressionParser _Parser = new ExpressionParser();
 
+
+        Views.DrumView drumView = new Views.DrumView();
+        Views.BeatLoopView beatLoopView = new Views.BeatLoopView();
+
         // readonly MediaPlayer _Player = new MediaPlayer();
         public MainWindow()
         {
@@ -56,7 +61,13 @@ namespace Synthesizer
                 new ExecutedRoutedEventHandler(ShowSynthCommandExecuted),
                 new CanExecuteRoutedEventHandler(ShowSynthCommandCanExecute)));
 
-            drumControl.DataContext = new Views.DrumView();
+            this.CommandBindings.Add(new CommandBinding(TestLoopCommand,
+                (o, e) => TestLoopCommandExecute(o, e),
+                (o, e) => TestSynthCommandCanExecute(o, e)
+            ));
+
+            drumControl.DataContext = drumView;
+            beatLoopControl.DataContext = beatLoopView;
         }
 
         static IEnumerable<float> ToEnumerable(int sampleRate, Func<double, double> func)
@@ -124,6 +135,25 @@ namespace Synthesizer
         }
 
         void ShowSynthCommandCanExecute(object sender, CanExecuteRoutedEventArgs args) => TestSynthCommandCanExecute(sender, args);
+
+        void TestLoopCommandExecute(object sender, ExecutedRoutedEventArgs args)
+        {
+            const int sampleRate = 48_000;
+            var sampler = new ErnstTech.SoundCore.Sampler.FuncSampler()
+            {
+                SampleFunc = drumView.Adapt(),
+                BitsPerSample = 32,
+                SampleRate = sampleRate,
+                Length = (long)(drumView.EffectTime * sampleRate)
+            };
+
+            beatLoopView.Sampler = sampler;
+
+            var stream = beatLoopView.WAVStream;
+            stream.Position = 0;
+
+            new System.Media.SoundPlayer(stream).Play();
+        }
 
     }
 }

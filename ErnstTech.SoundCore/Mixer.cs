@@ -9,7 +9,7 @@ namespace ErnstTech.SoundCore
 {
     public class Mixer
     {
-        public IEnumerable<double> Mix(IList<IEnumerable<double>> sources, IList<double> levels = null)
+        public IEnumerable<double> Mix(IList<IEnumerable<double>> sources, IList<double>? levels = null)
         {
             if (levels == null)
                 levels = Enumerable.Range(0, sources.Count).Select(_ => 1.0).ToArray();
@@ -19,7 +19,7 @@ namespace ErnstTech.SoundCore
             if (levels.Count != sources.Count)
                 throw new ArgumentException("The number of levels must match the number of sources.", nameof(levels));
 
-            var enumerators = sources.Select(s => s.GetEnumerator()).ToArray();
+            var enumerators = sources.Select(s => s.GetEnumerator()).ToArray<IEnumerator<double>?>();
 
             while (true)
             {

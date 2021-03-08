@@ -9,7 +9,7 @@ namespace ErnstTech.SoundCore.Sampler
 {
     public class WAVSampler : ISampler
     {
-        WaveReader _waveReader = null;
+        WaveReader _waveReader;
         short _channel = 0;
         double[] _data;
 
@@ -24,13 +24,14 @@ namespace ErnstTech.SoundCore.Sampler
                 throw new ArgumentOutOfRangeException(nameof(channel), channel, $"Channel must be in range [0, {_waveReader.Format.Channels}).");
             _channel = channel;
             _data = _waveReader.GetChannelFloat(channel).Select(f => (double)f).ToArray();
+            this.Length = _data.LongLength;
         }
 
         public int SampleRate => _waveReader.Format.SamplesPerSecond;
 
         public int BitsPerSample => _waveReader.Format.BitsPerSample;
 
-        public long Length => _data.LongLength;
+        public long Length { get; set; }
 
         public long GetSamples(double[] destination, long destOffset, long sampleStartOffset, long numSamples)
         {

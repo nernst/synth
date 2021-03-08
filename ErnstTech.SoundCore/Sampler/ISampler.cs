@@ -26,7 +26,7 @@ namespace ErnstTech.SoundCore.Sampler
         /// <summary>
         ///     The length of the sample in terms of number of samples. May be -1, if length cannot be determined.
         /// </summary>
-        long Length { get; }
+        long Length { get; set; }
 
         /// <summary>
         ///     Get a sample at a specific offset.

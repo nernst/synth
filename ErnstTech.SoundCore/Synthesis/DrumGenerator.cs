@@ -12,7 +12,7 @@ namespace ErnstTech.SoundCore.Synthesis
         public double PhaseShift1 { get; set; } = 175.0;
         public double PhaseShift2 { get; set; } = 224.0;
 
-        public Func<double, double> Source { get; set; } = null;
+        public Func<double, double>? Source { get; set; } = null;
 
         public ADSREnvelope Envelope { get; init; } = new ADSREnvelope();
 

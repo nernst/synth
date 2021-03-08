@@ -4,10 +4,18 @@
 
     <TargetFramework>net5.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>;NU1605;NU1701</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="WaveOutBuffer.cs" />
     <Compile Remove="WaveOutBuffer_old.cs" />
+    <Compile Remove="WaveOutStream.cs" />
+    <Compile Remove="WavePlayer.cs" />
     <Compile Remove="WavePlayer_old.cs" />
   </ItemGroup>
 

@@ -48,7 +48,7 @@ namespace ErnstTech.SoundCore
             var dataSize = (long)(length * sizeof(float) * channels.Length);
             format.WriteHeader(this.Stream, (int)dataSize);
 
-            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray();
+            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray<IEnumerator<float>?>();
 
             for (; length > 0; --length)
             {
@@ -56,7 +56,7 @@ namespace ErnstTech.SoundCore
                 {
                     if (!enumerators[i]?.MoveNext() ?? false)
                         enumerators[i] = null;
-                    this.Stream.Write(BitConverter.GetBytes(enumerators[i]?.Current ?? (float)0));
+                    this.Stream.Write(BitConverter.GetBytes(enumerators[i]?.Current ?? 0));
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace ErnstTech.SoundCore
             var dataSize = (long)(length * sizeof(float) * channels.Length);
             format.WriteHeader(this.Stream, (int)dataSize);
 
-            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray();
+            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray<IEnumerator<short>?>();
 
             for (; length > 0; --length)
             {
@@ -118,7 +118,7 @@ namespace ErnstTech.SoundCore
             var dataSize = (long)(length * sizeof(byte) * channels.Length);
             format.WriteHeader(this.Stream, (int)dataSize);
 
-            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray();
+            var enumerators = channels.Select(c => c.GetEnumerator()).ToArray<IEnumerator<byte>?>();
 
             for (; length > 0; --length)
             {

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ErnstTech.SoundCore.Sampler
 {
@@ -14,78 +11,69 @@ namespace ErnstTech.SoundCore.Sampler
         readonly object _SyncRoot = new object();
         const int _DefaultBeats = 16;
 
-        public enum Beat { Off, Half, Full }
-
-        public ISampler Sampler { get; set; }
+        public ISampler? Sampler { get; set; }
         public double BeatsPerMinute { get; set; } = 165.0;
-        public double? BeatDuration { get; set; } = null;
-        public ObservableCollection<Beat> Beats { get; init; } = new ObservableCollection<Beat>(Enumerable.Repeat(Beat.Off, _DefaultBeats));
+        public double BeatDuration => 1.0 / (4 * BeatsPerMinute / 60); //BeatsPerMinute / 60 / 4;
+        public double FullHeight { get; set; } = 1.0;
+        public double HalfHeight { get; set; } = 0.5;
+
+        static double[] DefaultLevels = new[] { Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off, Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off };
+        public IList<Beat> Beats { get; init; } = DefaultLevels.Select(l => new Beat { Level = l }).ToList();
         public int BeatCount => Beats.Count;
 
-        Stream _WAVStream = null;
+        Stream? _WAVStream;
         public Stream WAVStream
         {
             get
             {
-                lock (_SyncRoot)
-                {
-                    if (_WAVStream == null)
-                        _WAVStream = GenerateStream();
-                    return _WAVStream;
-                }
+                if (_WAVStream == null)
+                    _WAVStream = GenerateStream();
+                return _WAVStream;
             }
-            private set { lock(_SyncRoot) { _WAVStream = null; } }
+            private set { _WAVStream = null; }
         }
 
-        public BeatLoop()
+        public BeatLoop(ISampler? sampler = null)
         {
-            this.Beats.CollectionChanged += (o, e) => InvalidateStream();
+            this.Sampler = sampler;
         }
 
-        void InvalidateStream() => WAVStream = null;
+        public void InvalidateWAVStream() => _WAVStream = null;
 
         Stream GenerateStream()
         {
+            if (Sampler == null)
+                throw new InvalidOperationException("Sampler has not been specified.");
             if (BeatsPerMinute <= 0)
                 throw new InvalidOperationException("BeatsPerMinute must be positive.");
-            if ((BeatDuration == null || BeatDuration.Value <= 0) && Sampler.Length < 0)
-                throw new InvalidOperationException("Cannot determine length of sample.");
 
-            var timePerBeat = BeatsPerMinute / 60;
-            var samplesPerBeat = (long)timePerBeat * Sampler.SampleRate;
+            var samplesPerBeat = BeatDuration * Sampler.SampleRate;
 
-            var finalBuffer = new double[samplesPerBeat];
-            var sample = Sampler.GetSamples();
-            var halfSample = Beats.Any(beat => beat == Beat.Half) ? sample.Select(s => 0.5 * s).ToArray() : null;
-
-            for (int i = 0; i < BeatCount; ++i)
+            long bufferSize = 0;
+            // Fixup all of the beats
+            for (int i = 0; i < Beats.Count; ++i)
             {
-                var offset = i * samplesPerBeat;
-                double[] source = null;
-                switch(Beats[i])
-                {
-                    case Beat.Off:
-                        continue;
+                var beat = Beats[i];
+                beat.Sampler ??= Sampler;
+                beat.QueuePoint ??= (long)(i * BeatDuration * Sampler.SampleRate);
+                if (beat.Sampler.SampleRate != Sampler.SampleRate)
+                    throw new InvalidOperationException($"All samplers must have the sample sample rate. Sampler for beat {i} has value {beat.Sampler.SampleRate}. Base sampler has {Sampler.SampleRate}");
 
-                    case Beat.Half:
-                        source = halfSample;
-                        Debug.Assert(source != null, "Expected halfSample to be non-null.");
-                        break;
-
-                    case Beat.Full:
-                        source = sample;
-                        break;
-
-                    default:
-                        throw new InvalidOperationException($"Unexpected value for beat at index {i}: {Beats[i]}");
-                }
-
-                Array.Copy(source, 0, finalBuffer, offset, source.Length);
+                bufferSize = Math.Max(bufferSize, beat.QueuePoint.Value + beat.Sampler.Length);
             }
+
+            var buffer = new double[bufferSize];
+
+            foreach (var beat in Beats)
+            {
+                for (long i = beat.QueuePoint ?? 0, len = i + beat.Sampler!.Length; i < len; ++i)
+                    buffer[i] += beat.Sample(i);
+            }
+
 
             var ms = new MemoryStream();
             var writer = new WaveWriter(ms, Sampler.SampleRate);
-            writer.Write(finalBuffer.Length, finalBuffer.Select(s => (float)s));
+            writer.Write(buffer.Length, buffer.Select(s => (float)s));
             ms.Position = 0;
 
             return ms;

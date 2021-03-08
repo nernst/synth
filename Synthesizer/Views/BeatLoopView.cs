@@ -8,52 +8,81 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ErnstTech.SoundCore.Sampler;
+using System.Collections.Specialized;
 
 namespace Synthesizer.Views
 {
     public class BeatLoopView : INotifyPropertyChanged
     {
-        BeatLoop _BeatLoop = new BeatLoop();
-
         public event PropertyChangedEventHandler PropertyChanged;
 
-        void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public BeatLoop BeatLoop { get; init; }
+        public ObservableCollection<BeatView> Beats { get; init; }
 
         public ISampler Sampler
         {
-            get { return _BeatLoop.Sampler; }
+            get { return BeatLoop.Sampler; }
             set
             {
-                _BeatLoop.Sampler = value;
+                BeatLoop.Sampler = value;
                 NotifyPropertyChanged();
             }
         }
 
         public double BeatsPerMinute
         {
-            get { return _BeatLoop.BeatsPerMinute; }
+            get { return BeatLoop.BeatsPerMinute; }
             set
             {
-                _BeatLoop.BeatsPerMinute = value;
+                BeatLoop.BeatsPerMinute = value;
                 NotifyPropertyChanged();
             }
         }
 
-        public double? BeatDuration
+        public double BeatDuration
         {
-            get { return _BeatLoop.BeatDuration; }
+            get { return BeatLoop.BeatDuration; }
+        }
+
+        public double FullHeight
+        {
+            get { return BeatLoop.FullHeight; }
             set
             {
-                _BeatLoop.BeatDuration = value;
+                BeatLoop.FullHeight = value;
                 NotifyPropertyChanged();
             }
         }
 
-        public ObservableCollection<BeatLoop.Beat> Beats => _BeatLoop.Beats;
+        public double HalfHeight
+        {
+            get { return BeatLoop.HalfHeight; }
+            set
+            {
+                BeatLoop.HalfHeight = value;
+                NotifyPropertyChanged();
+            }
+        }
 
-        public Stream WAVStream => _BeatLoop.WAVStream;
+
+        public Stream WAVStream => BeatLoop.WAVStream;
+
+        public BeatLoopView()
+        {
+            this.BeatLoop = new BeatLoop();
+            this.Beats = new ObservableCollection<BeatView>(Enumerable.Range(0, BeatLoop.BeatCount).Select(i => new BeatView(this.BeatLoop, i)));
+            this.Beats.CollectionChanged += OnBeatsChanged;
+            this.PropertyChanged += (o, e) => BeatLoop.InvalidateWAVStream();
+        }
+
+        private void OnBeatsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

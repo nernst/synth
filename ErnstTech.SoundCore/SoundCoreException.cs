@@ -3,53 +3,53 @@ using System.Runtime.InteropServices;
 
 namespace ErnstTech.SoundCore
 {
-	/// <summary>
-	/// Summary description for SoundCoreException.
-	/// </summary>
-	public class SoundCoreException : Exception
-	{
-		private int _NativeError;
-		public int NativeError
-		{
-			get{ return _NativeError; }
-		}
+    /// <summary>
+    /// Summary description for SoundCoreException.
+    /// </summary>
+    public class SoundCoreException : Exception
+    {
+        private int _NativeError;
+        public int NativeError
+        {
+            get { return _NativeError; }
+        }
 
-		private string _Detail;
-		public string Detail
-		{
-			get { return _Detail == null ? string.Empty : _Detail; }
-		}
+        private string _Detail = string.Empty;
+        public string Detail
+        {
+            get { return _Detail; }
+        }
 
-		public override string Message
-		{
-			get
-			{
-				return string.Format( "{0}\n{1}", base.Message, Detail );
-			}
-		}
+        public override string Message
+        {
+            get
+            {
+                return string.Format("{0}\n{1}", base.Message, Detail);
+            }
+        }
 
-		public SoundCoreException( string message ) : this(message, 0)
-		{
-		}
+        public SoundCoreException(string message) : this(message, 0)
+        {
+        }
 
-		public SoundCoreException( string message, int nativeError ) : base( message )
-		{
-			_NativeError = nativeError;
+        public SoundCoreException(string message, int nativeError) : base(message)
+        {
+            _NativeError = nativeError;
 
-			if ( nativeError != 0 )
-			{
-				byte[] buffer = new byte[512];
-				
-				GCHandle handle = GCHandle.Alloc( buffer, GCHandleType.Pinned );
+            if (nativeError != 0)
+            {
+                byte[] buffer = new byte[512];
 
-				IntPtr ptr = handle.AddrOfPinnedObject();
+                GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 
-				WaveFormNative.waveOutGetErrorText( nativeError, ptr, buffer.Length );
+                IntPtr ptr = handle.AddrOfPinnedObject();
 
-				_Detail = System.Text.ASCIIEncoding.ASCII.GetString( buffer );
+                WaveFormNative.waveOutGetErrorText(nativeError, ptr, buffer.Length);
 
-				handle.Free();
-			}
-		}
-	}
+                _Detail = System.Text.Encoding.ASCII.GetString(buffer);
+
+                handle.Free();
+            }
+        }
+    }
 }
