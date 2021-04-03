@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ErnstTech.SoundCore.Synthesis\ErnstTech.SoundCore.Synthesis.csproj" />
     <ProjectReference Include="..\ErnstTech.SoundCore\ErnstTech.SoundCore.csproj" />
   </ItemGroup>
 
