@@ -18,7 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synthesizer", "Synthesizer\Synthesizer.csproj", "{4173960D-414F-4477-B99A-1CF77460D8CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synthesizer", "Synthesizer\Synthesizer.csproj", "{4173960D-414F-4477-B99A-1CF77460D8CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ErnstTech.SoundCore.Synthesis", "ErnstTech.SoundCore.Synthesis\ErnstTech.SoundCore.Synthesis.csproj", "{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,14 @@ Global
 		{4173960D-414F-4477-B99A-1CF77460D8CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4173960D-414F-4477-B99A-1CF77460D8CA}.Release|x86.ActiveCfg = Release|Any CPU
 		{4173960D-414F-4477-B99A-1CF77460D8CA}.Release|x86.Build.0 = Release|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFBB4AE2-2172-4406-AC14-43AE08CA57F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
