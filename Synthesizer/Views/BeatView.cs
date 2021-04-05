@@ -1,70 +1,31 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using ErnstTech.SoundCore.Sampler;
 
 namespace Synthesizer.Views
 {
-    public class BeatView : INotifyPropertyChanged
+    public class BeatView : ObservableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         int _Index = -1;
         public int Index
         {
-            get { return _Index; }
-            set
-            {
-                if (this._Index != value)
-                {
-                    this._Index = value;
-                    this.NotifyPropertyChanged();
-                }
-            }
+            get => _Index;
+            set => SetProperty(ref _Index, value);
         }
 
         BeatState _State = BeatState.Off;
 
         public BeatState State
         {
-            get { return _State; }
-            set
-            {
-                if (_State != value)
-                {
-                    _State = value;
-                    this.Parent.Beats[this.Index].Level = value switch
-                    {
-                        BeatState.Off => Beat.Off,
-                        BeatState.Half => Beat.Half,
-                        BeatState.Full => Beat.Full,
-                        _ => (double?)null
-                    } ?? this.Parent.Beats[this.Index].Level;
-
-                    this.NotifyPropertyChanged();
-                    this.NotifyPropertyChanged("Level");
-                }
-
-            }
+            get => _State;
+            set => SetProperty(ref _State, value);
         }
 
         public double Level
         {
-            get { return Parent.Beats[this.Index].Level; }
-            set
-            {
-                if (Parent.Beats[this.Index].Level != value)
-                {
-                    Parent.Beats[this.Index].Level = value;
-                    this.State = StateFromLevel(value);
-                    this.NotifyPropertyChanged();
-                }
-            }
+            get => Parent.Beats[Index].Level;
+            set => SetProperty(Parent.Beats[Index].Level, value, Parent.Beats[Index], (o, v) => o.Level = v);
         }
 
         public BeatLoop Parent { get; init; }
@@ -74,6 +35,17 @@ namespace Synthesizer.Views
             this.Parent = parent;
             this._Index = index;
             this._State = StateFromLevel(Level);
+
+            this.PropertyChanged += OnPropertyChanged; ;
+        }
+
+        private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.PropertyName) || e.PropertyName == "State")
+                Level = LevelFromState(State);
+
+            if (string.IsNullOrWhiteSpace(e.PropertyName) || e.PropertyName == "Level")
+                _State = StateFromLevel(Level); 
         }
 
         static BeatState StateFromLevel(double level) => level switch
@@ -82,6 +54,14 @@ namespace Synthesizer.Views
             Beat.Half => BeatState.Half,
             Beat.Off => BeatState.Off,
             _ => BeatState.Custom
+        };
+
+        double LevelFromState(BeatState state) => state switch
+        {
+            BeatState.Off => Beat.Off,
+            BeatState.Half => Beat.Half,
+            BeatState.Full => Beat.Full,
+            _ => Parent.Beats[Index].Level
         };
     }
 }

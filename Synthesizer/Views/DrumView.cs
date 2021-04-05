@@ -1,103 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using ErnstTech.SoundCore.Synthesis;
 
 namespace Synthesizer.Views
 {
-    public class DrumView : INotifyPropertyChanged
+    public class DrumView : ObservableObject
     {
         DrumGenerator _Generator = new DrumGenerator() { Source = new SawWave().Adapt() };
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            var handler = this.PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public double BaseFrequency
         {
-            get { return _Generator.BaseFrequency; }
-            set
-            {
-                _Generator.BaseFrequency = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.BaseFrequency;
+            set => SetProperty(_Generator.BaseFrequency, value, _Generator, (g, v) => g.BaseFrequency = v);
         }
 
         public double PhaseShift1
         {
-            get { return _Generator.PhaseShift1; }
-            set 
-            { 
-                _Generator.PhaseShift1 = value;
-                this.NotifyPropertyChanged();
-                
-            }
+            get => _Generator.PhaseShift1;
+            set => SetProperty(_Generator.PhaseShift1, value, _Generator, (g, v) => g.PhaseShift1 = v);
         }
 
         public double PhaseShift2
         {
-            get { return _Generator.PhaseShift2; }
-            set
-            {
-                _Generator.PhaseShift2 = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.PhaseShift2;
+            set => SetProperty(_Generator.PhaseShift2, value, _Generator, (g, v) => g.PhaseShift2 = v);
         }
 
         public double AttackTime
         {
-            get { return _Generator.Envelope.AttackTime; }
-            set
-            {
-                _Generator.Envelope.AttackTime = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.Envelope.AttackTime;
+            set => SetProperty(_Generator.Envelope.AttackTime, value, _Generator.Envelope, (e, v) => e.AttackTime = v);
         }
 
         public double DecayTime
         {
-            get { return _Generator.Envelope.DecayTime; }
-            set
-            {
-                _Generator.Envelope.DecayTime = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.Envelope.DecayTime;
+            set => SetProperty(_Generator.Envelope.DecayTime, value, _Generator.Envelope, (e, v) => e.DecayTime = v);
         }
 
         public double SustainHeight
         {
-            get { return _Generator.Envelope.SustainHeight; }
-            set
-            {
-                _Generator.Envelope.SustainHeight = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.Envelope.SustainHeight;
+            set => SetProperty(_Generator.Envelope.SustainHeight, value, _Generator.Envelope, (e, v) => e.SustainHeight = v);
         }
 
         public double SustainTime
         {
-            get { return _Generator.Envelope.SustainTime; }
-            set
-            {
-                _Generator.Envelope.SustainTime = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.Envelope.SustainTime;
+            set => SetProperty(_Generator.Envelope.SustainTime, value, _Generator.Envelope, (e, v) => e.SustainTime = v);
         }
 
         public double ReleaseTime
         {
-            get { return _Generator.Envelope.ReleaseTime; }
-            set
-            {
-                _Generator.Envelope.ReleaseTime = value;
-                this.NotifyPropertyChanged();
-            }
+            get => _Generator.Envelope.ReleaseTime;
+            set => SetProperty(_Generator.Envelope.ReleaseTime, value, _Generator.Envelope, (e, v) => e.ReleaseTime = v);
         }
 
         public double EffectTime => _Generator.Envelope.ReleaseEnd;

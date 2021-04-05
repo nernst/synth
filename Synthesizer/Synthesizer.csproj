@@ -10,6 +10,7 @@
     <PackageReference Include="InteractiveDataDisplay.WPF" Version="1.0.0">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>

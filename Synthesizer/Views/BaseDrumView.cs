@@ -4,23 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using ErnstTech.SoundCore.Synthesis;
 
 namespace Synthesizer.Views
 {
-    public class BaseDrumView : INotifyPropertyChanged
+    public class BaseDrumView : ObservableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void INotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            var handler = PropertyChanged;
-            if (handler != null)
-                handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public ObservableCollection<double> Harmonics { get; init; } = new ObservableCollection<double>(BaseDrumGenerator.SampleHarmonics);
         private BaseDrumGenerator _Generator;
 

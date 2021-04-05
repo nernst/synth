@@ -5,65 +5,42 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using ErnstTech.SoundCore.Sampler;
 using System.Collections.Specialized;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
+using ErnstTech.SoundCore.Sampler;
 
 namespace Synthesizer.Views
 {
-    public class BeatLoopView : INotifyPropertyChanged
+    public class BeatLoopView : ObservableObject
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         public BeatLoop BeatLoop { get; init; }
         public ObservableCollection<BeatView> Beats { get; init; }
 
         public ISampler Sampler
         {
-            get { return BeatLoop.Sampler; }
-            set
-            {
-                BeatLoop.Sampler = value;
-                NotifyPropertyChanged();
-            }
+            get => BeatLoop.Sampler;
+            set => SetProperty(BeatLoop.Sampler, value, BeatLoop, (o, v) => o.Sampler = v);
         }
 
         public double BeatsPerMinute
         {
-            get { return BeatLoop.BeatsPerMinute; }
-            set
-            {
-                BeatLoop.BeatsPerMinute = value;
-                NotifyPropertyChanged();
-            }
+            get => BeatLoop.BeatsPerMinute;
+            set => SetProperty(BeatLoop.BeatsPerMinute, value, BeatLoop, (o, v) => o.BeatsPerMinute = v);
         }
 
-        public double BeatDuration
-        {
-            get { return BeatLoop.BeatDuration; }
-        }
+        public double BeatDuration => BeatLoop.BeatDuration;
 
         public double FullHeight
         {
-            get { return BeatLoop.FullHeight; }
-            set
-            {
-                BeatLoop.FullHeight = value;
-                NotifyPropertyChanged();
-            }
+            get => BeatLoop.FullHeight;
+            set => SetProperty(BeatLoop.FullHeight, value, BeatLoop, (o, v) => o.FullHeight = v);
         }
 
         public double HalfHeight
         {
-            get { return BeatLoop.HalfHeight; }
-            set
-            {
-                BeatLoop.HalfHeight = value;
-                NotifyPropertyChanged();
-            }
+            get => BeatLoop.HalfHeight;
+            set => SetProperty(BeatLoop.HalfHeight, value, BeatLoop, (o, v) => o.HalfHeight = v);
         }
-
 
         public Stream WAVStream => BeatLoop.WAVStream;
 
@@ -78,11 +55,6 @@ namespace Synthesizer.Views
         private void OnBeatsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             throw new NotImplementedException();
-        }
-
-        void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
