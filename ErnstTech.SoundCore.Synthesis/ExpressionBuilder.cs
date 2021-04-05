@@ -1,12 +1,17 @@
 ﻿using System;
 using ErnstTech.SoundCore.Synthesis.Expressions;
+using ErnstTech.SoundCore.Synthesis.Expressions.Optimizations;
 
 namespace ErnstTech.SoundCore.Synthesis
 {
     public class ExpressionBuilder
     {
-        IExpressionParser _Parser;
-        IExpressionCompiler _Compiler;
+        readonly IExpressionParser _Parser;
+        readonly IExpressionCompiler _Compiler;
+        readonly IOptimizer[] _Optimizers = new IOptimizer[]
+        {
+            new ConstantFolder(),
+        };
 
         public ExpressionBuilder(IExpressionParser parser, IExpressionCompiler? compiler = null)
         {
@@ -17,6 +22,10 @@ namespace ErnstTech.SoundCore.Synthesis
         public Func<double, double> Compile(string expression)
         {
             var tree = _Parser.Parse(expression);
+
+            foreach (var opt in _Optimizers)
+                tree = opt.Optimize(tree);
+
             return _Compiler.Compile(tree);
         }
     }
