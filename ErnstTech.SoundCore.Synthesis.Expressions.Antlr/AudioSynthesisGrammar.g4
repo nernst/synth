@@ -13,7 +13,7 @@ expr
 	| op=('+' | '-') child=expr							# unaryExpr
 	| leftChild=expr op=('*' | '/') rightChild=expr		# binaryExpr
 	| leftChild=expr op=('+' | '-') rightChild=expr		# binaryExpr
-	| funcName=ID '(' arguments=exprList ')'			# functionExpr
+	| funcName=ID '(' arguments=exprList? ')'			# functionExpr
 	| value=NUM											# valueExpr
 	| PI												# piExpr
 	| EULER												# eulerExpr
