@@ -166,7 +166,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestADSREnvelope()
         {
-            string expression = "adsr() * t";
+            string expression = "adsr()";
             var func = Parse(expression);
 
             Assert.IsNotNull(func);
