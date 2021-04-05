@@ -11,16 +11,6 @@
 
   <ItemGroup>
     <None Remove="Expressions\AudioSynthesisGrammar.g4" />
-    <None Remove="Expressions\SynthExpressionGrammar.g4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Antlr4 Include="Expressions\SynthExpressionGrammar.g4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.9.1" />
-    <PackageReference Include="Antlr4BuildTasks" Version="8.13.0" />
   </ItemGroup>
 
   <ItemGroup>

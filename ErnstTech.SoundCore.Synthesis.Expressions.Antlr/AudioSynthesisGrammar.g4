@@ -27,8 +27,9 @@ OP_DIV: '/';
 
 PI: 'pi';
 EULER: 'e';
+TIME_VAR: 't';
 
 ID: [a-zA-Z] [_a-zA-Z0-9]*;
-TIME_VAR: 't';
+
 NUM: [0-9]+ ('.' [0-9]+)? ([eE] [+-]? [0-9]+ ('.' [0-9]+)? )?;
 WS: [ \t\r\n] -> skip;

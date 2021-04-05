@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ExpressionParser = ErnstTech.SoundCore.Synthesis.ExpressionParser;
 using System.IO;
 using ErnstTech.SoundCore;
+using ErnstTech.SoundCore.Synthesis;
 
 
 namespace Synthesizer
@@ -42,7 +42,7 @@ namespace Synthesizer
             set { SetValue(ExpressionTextProperty, value); }
         }
 
-        static readonly ExpressionParser _Parser = new ExpressionParser();
+        static readonly ExpressionBuilder _Parser = new ExpressionBuilder(new ErnstTech.SoundCore.Synthesis.Expressions.Antlr.ExpressionParser());
 
 
         Views.DrumView drumView = new Views.DrumView();
@@ -95,7 +95,7 @@ namespace Synthesizer
         void TestSynthCommandExecuted(object sender, ExecutedRoutedEventArgs args)
         {
             const int sampleRate = 44100;
-            var func = _Parser.Parse(this.ExpressionText);
+            var func = _Parser.Compile(this.ExpressionText);
             var sample = Generate(sampleRate, 1.0, func);
             new System.Media.SoundPlayer(sample).Play();
         }
@@ -111,7 +111,7 @@ namespace Synthesizer
                     return;
                 }
 
-                var func = _Parser.Parse(expr);
+                var func = _Parser.Compile(expr);
                 args.CanExecute = func != null;
             }
             catch
@@ -123,7 +123,7 @@ namespace Synthesizer
         void ShowSynthCommandExecuted(object sender, ExecutedRoutedEventArgs args)
         {
             const int sampleRate = 44100;
-            var func = _Parser.Parse(this.ExpressionText);
+            var func = _Parser.Compile(this.ExpressionText);
             var sample = Generate(sampleRate, 1.0, func);
 
             var delta = 1.0 / sampleRate;
