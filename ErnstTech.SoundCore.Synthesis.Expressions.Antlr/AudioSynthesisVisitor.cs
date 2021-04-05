@@ -78,9 +78,11 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions.Antlr
         public override ExpressionNode VisitFunctionExpr([NotNull] AudioSynthesisGrammarParser.FunctionExprContext context)
         {
             var name = context.funcName.Text;
-            var exprListNode = (ExpressionListNode)Visit(context.exprList());
+            var children = context.arguments is null
+                ? new List<ExpressionNode>()
+                : ((ExpressionListNode)Visit(context.arguments)).Children;
 
-            return new FunctionNode(name, exprListNode.Children);
+            return new FunctionNode(name, children);
         }
 
         public override ExpressionNode VisitCompileUnit([NotNull] AudioSynthesisGrammarParser.CompileUnitContext context)
