@@ -10,7 +10,7 @@ namespace ErnstTech.SoundCore.Synthesis
     {
         public double DutyCycle { get; init; }
         
-        public SquareWave(double dutyCycle)
+        public SquareWave(double dutyCycle = 0.5)
         {
             if (dutyCycle < 0 || dutyCycle > 1.0)
                 throw new ArgumentOutOfRangeException(nameof(dutyCycle), dutyCycle, "dutyCycle must be in the closed range [0, 1.0].");

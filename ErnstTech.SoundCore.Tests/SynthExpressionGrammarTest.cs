@@ -1,6 +1,9 @@
 using System;
 using ErnstTech.SoundCore.Synthesis;
+using ErnstTech.SoundCore.Synthesis.Expressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using AntlrParser = ErnstTech.SoundCore.Synthesis.Expressions.Antlr.ExpressionParser;
 
 namespace ErnstTech.SoundCore.Tests
 {
@@ -9,13 +12,15 @@ namespace ErnstTech.SoundCore.Tests
     {
         const double Epsilon = 1e-6;
 
-        readonly ExpressionParser _Parser = new ExpressionParser();
+        readonly ExpressionBuilder _Builder = new ExpressionBuilder(new AntlrParser());
+
+        Func<double, double> Parse(string expression) => _Builder.Compile(expression);
 
         [TestMethod]
         public void TestConstant()
         {
             string expression = "2";
-            var func = _Parser.Parse(expression);
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(2, func(0), Epsilon);
@@ -27,7 +32,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestPi()
         {
-            var func = _Parser.Parse("pi");
+            var func = Parse("pi");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(Math.PI, func(0), Epsilon);
@@ -38,7 +43,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestEuler()
         {
-            var func = _Parser.Parse("e");
+            var func = Parse("e");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(Math.E, func(0), Epsilon);
@@ -49,7 +54,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSimpleAdd()
         {
-            var func = _Parser.Parse("2+3");
+            var func = Parse("2+3");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(5, func(0), Epsilon);
@@ -60,7 +65,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSimpleSub()
         {
-            var func = _Parser.Parse("2-3");
+            var func = Parse("2-3");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(-1, func(0), Epsilon);
@@ -71,7 +76,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSimpleMul()
         {
-            var func = _Parser.Parse("2*3");
+            var func = Parse("2*3");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(6, func(0), Epsilon);
@@ -82,7 +87,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSimpleDiv()
         {
-            var func = _Parser.Parse("2/3");
+            var func = Parse("2/3");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(2.0 / 3, func(0), Epsilon);
@@ -93,7 +98,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestTimeVar()
         {
-            var func = _Parser.Parse("t");
+            var func = Parse("t");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(1, func(1), Epsilon);
@@ -104,7 +109,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestAddMul()
         {
-            var func = _Parser.Parse("2+3*4");
+            var func = Parse("2+3*4");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(14, func(0), Epsilon);
@@ -115,7 +120,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSubDiv()
         {
-            var func = _Parser.Parse("2-3/4");
+            var func = Parse("2-3/4");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(1.25, func(0), Epsilon);
@@ -126,7 +131,7 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestTimeExpr()
         {
-            var func = _Parser.Parse("2*t");
+            var func = Parse("2*t");
 
             Assert.IsNotNull(func);
             Assert.AreEqual(0, func(0), Epsilon);
@@ -138,7 +143,7 @@ namespace ErnstTech.SoundCore.Tests
         public void TestComplexExpression()
         {
             string expression = "2*cos(2*pi*t)";
-            var func = _Parser.Parse(expression);
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(2, func(0), Epsilon);
@@ -150,17 +155,19 @@ namespace ErnstTech.SoundCore.Tests
         [TestMethod]
         public void TestSubExpression()
         {
-            string expression = "cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5";
-            var func = _Parser.Parse(expression);
+            // string expression = "cos(2 * PI * (220 + 4 * cos(2 * PI * 10 * t)) * t) * 0.5";
+            string expression = "(2 + 4) * 2";
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
+            Assert.AreEqual(12, func(0), Epsilon);
         }
 
         [TestMethod]
         public void TestADSREnvelope()
         {
             string expression = "adsr(1)";
-            var func = _Parser.Parse(expression);
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(0, func(0), Epsilon);
@@ -178,7 +185,7 @@ namespace ErnstTech.SoundCore.Tests
         public void TestSawWave()
         {
             string expression = "saw(t)";
-            var func = _Parser.Parse(expression);
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(-1.0, func(0.0), Epsilon);
@@ -193,7 +200,7 @@ namespace ErnstTech.SoundCore.Tests
         public void TestTriWave()
         {
             string expression = "tri(t)";
-            var func = _Parser.Parse(expression);
+            var func = Parse(expression);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(-1.0, func(0.0), Epsilon);
@@ -210,7 +217,7 @@ namespace ErnstTech.SoundCore.Tests
         public void TestSquareWave()
         {
             string expresion = "square(t)";
-            var func = _Parser.Parse(expresion);
+            var func = Parse(expresion);
 
             Assert.IsNotNull(func);
             Assert.AreEqual(1.0, func(0.0), Epsilon);

@@ -191,7 +191,7 @@ namespace ErnstTech.SoundCore.Synthesis
         { }
 
 
-        public Func<double, double> Parse(string expression)
+        public UnaryOp Parse(string expression)
         {
             if (string.IsNullOrWhiteSpace(expression))
                 throw new ArgumentNullException(nameof(expression));
@@ -201,7 +201,7 @@ namespace ErnstTech.SoundCore.Synthesis
             return DoParse(expression);
         }
 
-        Func<double, double> DoParse([NotNull]string expression)
+        UnaryOp DoParse([NotNull]string expression)
         {
             var stream = CharStreams.fromString(expression);
             var lexer = new SynthExpressionGrammarLexer(stream);

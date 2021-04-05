@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -10,12 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Expressions\AudioSynthesisGrammar.g4" />
-    <None Remove="Expressions\SynthExpressionGrammar.g4" />
+    <None Remove="AudioSynthesisGrammar.g4" />
   </ItemGroup>
 
   <ItemGroup>
-    <Antlr4 Include="Expressions\SynthExpressionGrammar.g4" />
+    <Antlr4 Include="AudioSynthesisGrammar.g4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ErnstTech.SoundCore\ErnstTech.SoundCore.csproj" />
+    <ProjectReference Include="..\ErnstTech.SoundCore.Synthesis\ErnstTech.SoundCore.Synthesis.csproj" />
   </ItemGroup>
 
 </Project>
