@@ -11,6 +11,7 @@ exprList
 expr
 	: '(' inner=expr ')'								# subExpr
 	| op=('+' | '-') child=expr							# unaryExpr
+	| leftChild=expr op='^' rightChild=expr				# binaryExpr
 	| leftChild=expr op=('*' | '/') rightChild=expr		# binaryExpr
 	| leftChild=expr op=('+' | '-') rightChild=expr		# binaryExpr
 	| funcName=ID '(' arguments=exprList? ')'			# functionExpr
@@ -24,6 +25,7 @@ OP_ADD: '+';
 OP_SUB: '-';
 OP_MUL: '*';
 OP_DIV: '/';
+OP_EXP: '^';
 
 PI: 'pi';
 EULER: 'e';

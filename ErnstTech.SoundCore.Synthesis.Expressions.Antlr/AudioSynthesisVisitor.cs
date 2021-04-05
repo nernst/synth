@@ -56,6 +56,9 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions.Antlr
                 case AudioSynthesisGrammarLexer.OP_DIV:
                     return new DivideNode(left, right);
 
+                case AudioSynthesisGrammarLexer.OP_EXP:
+                    return new ExponentiationNode(left, right);
+
                 default:
                     throw new ArgumentException($"Unexpected 'op': {context.op.Type}", nameof(context));
             }

@@ -107,6 +107,17 @@ namespace ErnstTech.SoundCore.Tests
         }
 
         [TestMethod]
+        public void TestSimpleExp()
+        {
+            var func = Parse("2^3");
+
+            Assert.IsNotNull(func);
+            Assert.AreEqual(8, func(0), Epsilon);
+            Assert.AreEqual(8, func(1), Epsilon);
+            Assert.AreEqual(8, func(2), Epsilon);
+        }
+
+        [TestMethod]
         public void TestAddMul()
         {
             var func = Parse("2+3*4");

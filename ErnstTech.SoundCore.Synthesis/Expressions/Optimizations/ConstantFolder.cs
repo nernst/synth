@@ -78,6 +78,10 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions.Optimizations
                         result = left / right;
                         break;
 
+                    case ExponentiationNode:
+                        result = Math.Pow(left, right);
+                        break;
+
                     default:
                         throw new InvalidOperationException($"Unexpected BinaryOpNode type: {binaryOpNode.GetType().Name}");
                 }

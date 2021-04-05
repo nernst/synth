@@ -47,6 +47,12 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions
                 return (double t) => left(t) / right(t);
             }
 
+            public override Func<double, double> Visit(ExponentiationNode node)
+            {
+                var (left, right) = GetChildren(node);
+                return (double t) => Math.Pow(left(t), right(t));
+            }
+
             public override Func<double, double> Visit(AbsoluteValueNode node)
             {
                 var child = Visit(node);

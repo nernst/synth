@@ -19,6 +19,7 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions.AST
         public abstract T Visit(SubtractNode node);
         public abstract T Visit(MultiplyNode node);
         public abstract T Visit(DivideNode node);
+        public abstract T Visit(ExponentiationNode node);
 
         // Unary Operations
         public abstract T Visit(AbsoluteValueNode node);

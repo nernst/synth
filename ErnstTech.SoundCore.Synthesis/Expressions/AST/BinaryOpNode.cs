@@ -37,4 +37,9 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions.AST
     {
         public DivideNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
     }
+
+    public class ExponentiationNode : BinaryOpNode
+    {
+        public ExponentiationNode(ExpressionNode left, ExpressionNode right) : base(left, right) { }
+    }
 }
