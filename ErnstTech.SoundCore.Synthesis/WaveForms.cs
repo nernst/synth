@@ -10,14 +10,6 @@ namespace ErnstTech.SoundCore.Synthesis
 		private WaveForms()
 		{}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="time"></param>
-		/// <param name="peak"></param>
-		/// <param name="frequency"></param>
-		/// <param name="dutyCycle"></param>
-		/// <returns></returns>
 		public static int TriangleWave( long sample, int sampleRate, int peak, int frequency, float dutyCycle )
 		{
 			int point = GetPoint( sample, frequency );

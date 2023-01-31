@@ -296,7 +296,7 @@ namespace ErnstTech.SoundCore.Synthesis.Expressions
         /// </summary>
         /// <param name="abstractSyntaxTree">The <see cref="ExpressionNode"/> to evaluate.</param>
         /// <returns>
-        ///     A <see cref="Func&lt;double, double&gt;"/> generated from <paramref name="abstractSyntaxTree"/> as a function of time.
+        ///     A function generated from <paramref name="abstractSyntaxTree"/> as a function of time.
         /// </returns>
         public Func<double, double> Compile(ExpressionNode abstractSyntaxTree) => new Visitor(this).Visit(abstractSyntaxTree);
 

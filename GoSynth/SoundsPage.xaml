@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoSynth.SoundsPage"
+             xmlns:viewmodel="clr-namespace:GoSynth.ViewModels"
+             xmlns:model="clr-namespace:GoSynth.Models"
+             x:DataType="viewmodel:SoundsViewModel"
+             Title="Sounds">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" IconImageSource="{FontImage Glyph='+', Size=22}" Command="{Binding NewSoundCommand}" />
+    </ContentPage.ToolbarItems>
+    
+    <VerticalStackLayout Padding="5">
+        <CollectionView ItemsSource="{Binding Sounds}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type model:Sound}">
+                    <Frame>
+                        <Label Text="{Binding Name}" />
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

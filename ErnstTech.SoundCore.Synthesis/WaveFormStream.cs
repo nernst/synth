@@ -57,7 +57,7 @@ namespace ErnstTech.SoundCore.Synthesis
         /// <summary>
         ///     Gets the position in the stream.
         /// </summary>
-        /// <exception cref="NotSupportException">
+        /// <exception cref="NotSupportedException">
         ///     Always thrown if the property is set.
         /// </exception>
         public override long Position
