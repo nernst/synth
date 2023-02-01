@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GoSynth.Views.EquationHelp"
+             Title="Equation Help">
+    <VerticalStackLayout Padding="10" Spacing="5">
+        <Label 
+            Text="Supported Functions"
+            VerticalOptions="Start" 
+            HorizontalOptions="Center" />
+
+        <Label Text="sin: sin(arg); Sine" HorizontalOptions="Start" />
+        <Label Text="cos: cos(arg); Cosine" HorizontalOptions="Start" />
+        <Label Text="tan: tan(arg); Tangent" HorizontalOptions="Start" />
+        <Label Text="abs: abs(arg); Absolute Value" HorizontalOptions="Start" />
+        <Label Text="log2: log2(arg); Log (base 2)" HorizontalOptions="Start" />
+        <Label Text="log10: log10(arg); Log (base 10)" HorizontalOptions="Start" />
+        <Label Text="ln: ln(arg); Natural Log (base e)" HorizontalOptions="Start" />
+        <Label Text="saw: saw(arg); Saw wave generator" HorizontalOptions="Start" />
+        <Label Text="tri: tri(arg); Triangle wave generator" HorizontalOptions="Start" />
+        <Label Text="square: square(arg, [duty cycle = 0.5]); Square wave generator" HorizontalOptions="Start" />
+        <Label Text="sqrt: sqrt(arg); Square wave generator" HorizontalOptions="Start" />
+        <Label Text="movavg: moveavg(numSamples, arg); Moving average over numSamples" HorizontalOptions="Start" />
+        <Label Text="pow: pow(x, y); x raised to the y power." HorizontalOptions="Start" />
+        <Label Text="asdr: asdr([attack, [release, [sustain, [decay, [attackHeight, [sustainHeight]]]]]]); Attack/Decay/Sustain/Release envelope" HorizontalOptions="Start" />
+
+
+    </VerticalStackLayout>
+</ContentPage>

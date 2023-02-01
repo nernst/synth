@@ -18,7 +18,7 @@
 		<ApplicationTitle>GoSynth</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.gosynth</ApplicationId>
+		<ApplicationId>com.ernsttech.gosynth</ApplicationId>
 		<ApplicationIdGuid>2738c324-4a0a-4bba-8960-d30a3f9c799c</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -32,8 +32,17 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<Nullable>enable</Nullable>
-	</PropertyGroup>
 
+	</PropertyGroup>
+	
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+		<AndroidKeyStore>True</AndroidKeyStore>
+		<AndroidSigningKeyStore>..\myapp.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>key</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass></AndroidSigningKeyPass>
+		<AndroidSigningStorePass></AndroidSigningStorePass>
+	</PropertyGroup>
+	
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -66,16 +75,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="SoundPage.xaml.cs">
+	  <Compile Update="Views\SoundPage.xaml.cs">
 	    <DependentUpon>SoundPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="SoundPage.xaml">
+	  <MauiXaml Update="Views\EquationHelp.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="SoundsPage.xaml">
+	  <MauiXaml Update="Views\SoundPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\SoundsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

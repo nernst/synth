@@ -5,6 +5,11 @@
              x:DataType="viewmodel:SoundViewModel"
              x:Class="GoSynth.SoundPage"
              Title="Sound Formula Editor">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Help" IconImageSource="{FontImage Glyph='?', Size=22}" Command="{Binding HelpCommand}" />
+    </ContentPage.ToolbarItems>
+
     <Grid RowDefinitions="Auto, Auto, Auto, Auto, *, Auto">
 
         <Editor Grid.Row="0" Text="{Binding Name}" Placeholder="Sound Name" />

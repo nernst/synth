@@ -9,14 +9,40 @@ namespace GoSynth.ViewModels;
 
 public partial class SoundViewModel : ObservableObject, IQueryAttributable
 {
-    public ICommand PlayCommand { get;}
-    public IAsyncRelayCommand SaveCommand { get;  }
+    public class ConfirmDiscardEventArgs
+    {
+        public bool? Confirmed { get; set; } = null;
+    }
+
+    public ICommand PlayCommand { get; }
+    public IAsyncRelayCommand SaveCommand { get; }
     public IAsyncRelayCommand CancelCommand { get; }
     public IAsyncRelayCommand DeleteCommand { get; }
+    public IAsyncRelayCommand HelpCommand { get;  }
 
     Synthesizer synthesizer;
     Sound sound;
-    
+    Sound? original = null;
+
+    public Sound Sound
+    {
+        get => this.sound;
+        set
+        {
+            this.sound = value;
+            original = value.Clone();
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(Equation));
+            OnPropertyChanged(nameof(Duration));
+        }
+    }
+
+    public bool HasChanges
+    {
+        get => !sound.Equals(original);
+    }
+
+    public Func<ConfirmDiscardEventArgs, Task>? ConfirmDiscard;
 
     public Guid Id
     {
@@ -57,9 +83,6 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         return _generatorFunc;
     }
 
-    bool hasChanges = false;
-
-
     public SoundViewModel()
         : this(new Sound())
     { }
@@ -70,6 +93,7 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         SaveCommand = new AsyncRelayCommand(Save);
         CancelCommand = new AsyncRelayCommand(Cancel);
         DeleteCommand = new AsyncRelayCommand(Delete);
+        HelpCommand = new AsyncRelayCommand(Help);
 
         this.synthesizer = new Synthesizer();
         this.sound = sound;
@@ -78,11 +102,15 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         {
             if (e.PropertyName != null)
             {
-                hasChanges = true;
                 if (e.PropertyName == nameof(Equation))
                     _generatorFunc = null;
             }
         };
+    }
+
+    async Task Help()
+    {
+        await Shell.Current.GoToAsync(nameof(Views.EquationHelp));
     }
 
     private void Play()
@@ -103,29 +131,29 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         player.Play();
     }
 
-    async Task NavigateToParent()
-    {
-        await Shell.Current.GoToAsync("..");
-    }
-
     private async Task Cancel()
     {
-        if (hasChanges)
+        if (HasChanges && ConfirmDiscard != null)
         {
+            var args = new ConfirmDiscardEventArgs();
+            await ConfirmDiscard.Invoke(args);
+            if (!(args.Confirmed ?? false))
+                return;
         }
-        await NavigateToParent();
+
+        await Shell.Current.GoToAsync("..");
     }
 
     private async Task Save()
     {
         await SoundManager.Current.Save(this.sound);
-        await NavigateToParent();
+        await Shell.Current.GoToAsync("..", new Dictionary<string, object> { { "sound", this.Sound } });
     }
 
     private async Task Delete()
     {
         await SoundManager.Current.Remove(this.sound);
-        await NavigateToParent();
+        await Shell.Current.GoToAsync("..", new Dictionary<string, object> { { "remove", this.Id } });
     }
 
     void IQueryAttributable.ApplyQueryAttributes(IDictionary<string, object> query)
@@ -134,8 +162,10 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         {
             if (model is Sound sound)
             {
-                this.sound = sound;
-                OnPropertyChanged();
+                this.Sound = sound;
+                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged(nameof(Equation));
+                OnPropertyChanged(nameof(Duration));
             }
         }
     }

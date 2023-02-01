@@ -10,15 +10,18 @@
         <ToolbarItem Text="Add" IconImageSource="{FontImage Glyph='+', Size=22}" Command="{Binding NewSoundCommand}" />
     </ContentPage.ToolbarItems>
     
-    <VerticalStackLayout Padding="5">
-        <CollectionView ItemsSource="{Binding Sounds}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type model:Sound}">
-                    <Frame>
-                        <Label Text="{Binding Name}" />
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </VerticalStackLayout>
+    <CollectionView 
+        ItemsSource="{Binding Sounds}"
+        SelectionMode="Single"
+        SelectionChangedCommand="{Binding SelectSoundCommand}"
+        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}"
+        >
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="{x:Type viewmodel:SoundViewModel}">
+                <Frame>
+                    <Label Text="{Binding Name}" />
+                </Frame>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>
