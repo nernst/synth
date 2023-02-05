@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:GoSynth.ViewModels"
+             xmlns:views="clr-namespace:GoSynth.Views"
+             x:DataType="viewmodel:BeatLoopViewModel"
+             x:Class="GoSynth.Views.LoopPage"
+             Title="Loop">
+    <ContentPage.Resources>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="Auto, Auto, Auto, *" Padding="5">
+        
+        <Picker 
+            Grid.Row="0" 
+            Title="Select a sound"
+            ItemsSource="{Binding Sounds}" 
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding Sound}"
+            Grid.ColumnSpan="2"
+            
+            />
+
+        <CollectionView 
+            Grid.Row="1" 
+            ItemsSource="{Binding BeatViewModels}" 
+            MaximumWidthRequest="800"
+            MaximumHeightRequest="60"
+            >
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="16" VerticalItemSpacing="0" HorizontalItemSpacing="0" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type viewmodel:BeatViewModel}">
+                    <views:BeatView Padding="0"/>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Button 
+            Text="Play" 
+            Grid.Row="2"
+            Command="{Binding PlayCommand}"
+                />
+
+    </Grid>
+</ContentPage>

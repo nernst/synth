@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GoSynth.Synthesis;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ namespace GoSynth.Models
         public string Name { get; set; } = string.Empty;
         public string Equation { get; set; } = "";
         public double Duration { get; set; } = 1.0;
-
 
         public Sound Clone()
         {
@@ -30,5 +30,17 @@ namespace GoSynth.Models
         }
 
         object ICloneable.Clone() => Clone();
+
+        public Func<double, double>? Compile()
+        {
+            try
+            {
+                return Synthesizer.Current.Compile(this.Equation);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

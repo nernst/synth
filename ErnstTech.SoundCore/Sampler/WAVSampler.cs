@@ -27,9 +27,9 @@ namespace ErnstTech.SoundCore.Sampler
             this.Length = _data.LongLength;
         }
 
-        public int SampleRate => _waveReader.Format.SamplesPerSecond;
+        public SampleRate SampleRate => (SampleRate)_waveReader.Format.SamplesPerSecond;
 
-        public int BitsPerSample => _waveReader.Format.BitsPerSample;
+        public AudioBits BitsPerSample => (AudioBits)_waveReader.Format.BitsPerSample;
 
         public long Length { get; set; }
 

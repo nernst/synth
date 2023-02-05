@@ -12,6 +12,7 @@
             VerticalOptions="Center">
 
             <Button Text="Sounds" Command="{Binding GoToSoundsCommand}" />
+            <Button Text="Loops" Command="{Binding GotoLoopsCommand}" />
         </VerticalStackLayout>
     </ScrollView>
 

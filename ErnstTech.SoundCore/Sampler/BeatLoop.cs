@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -8,34 +7,36 @@ namespace ErnstTech.SoundCore.Sampler
 {
     public class BeatLoop
     {
-        readonly object _SyncRoot = new object();
-        const int _DefaultBeats = 16;
-
         public ISampler? Sampler { get; set; }
         public double BeatsPerMinute { get; set; } = 165.0;
         public double BeatDuration => 1.0 / (4 * BeatsPerMinute / 60); //BeatsPerMinute / 60 / 4;
         public double FullHeight { get; set; } = 1.0;
         public double HalfHeight { get; set; } = 0.5;
 
-        static double[] DefaultLevels = new[] { Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off, Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off };
+        static readonly double[] DefaultLevels = new[] { Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off, Beat.Full, Beat.Off, Beat.Half, Beat.Off, Beat.Full, Beat.Off, Beat.Off, Beat.Off };
         public IList<Beat> Beats { get; init; } = DefaultLevels.Select(l => new Beat { Level = l }).ToList();
         public int BeatCount => Beats.Count;
+
+        public BeatLoop()
+            : this(16)
+        { }
+
+        public BeatLoop(int beatCount)
+            : this(Enumerable.Range(0, beatCount).Select(_ => new Beat { Level = Beat.Off }).ToArray())
+        {
+            if (this.BeatCount == 0)
+                throw new ArgumentOutOfRangeException(nameof(beatCount), beatCount, "Must be a positive integer.");
+        }
+
+        public BeatLoop(IList<Beat> beats)
+        {
+            Beats = beats;
+        }
 
         Stream? _WAVStream;
         public Stream WAVStream
         {
-            get
-            {
-                if (_WAVStream == null)
-                    _WAVStream = GenerateStream();
-                return _WAVStream;
-            }
-            private set { _WAVStream = null; }
-        }
-
-        public BeatLoop(ISampler? sampler = null)
-        {
-            this.Sampler = sampler;
+            get => _WAVStream ??= GenerateStream();
         }
 
         public void InvalidateWAVStream() => _WAVStream = null;
@@ -46,8 +47,10 @@ namespace ErnstTech.SoundCore.Sampler
                 throw new InvalidOperationException("Sampler has not been specified.");
             if (BeatsPerMinute <= 0)
                 throw new InvalidOperationException("BeatsPerMinute must be positive.");
+            if (BeatCount <= 0)
+                throw new InvalidOperationException("Cannot generate with no beats.");
 
-            var samplesPerBeat = BeatDuration * Sampler.SampleRate;
+            var samplesPerBeat = BeatDuration * (long)Sampler.SampleRate;
 
             long bufferSize = 0;
             // Fixup all of the beats
@@ -55,7 +58,7 @@ namespace ErnstTech.SoundCore.Sampler
             {
                 var beat = Beats[i];
                 beat.Sampler ??= Sampler;
-                beat.QueuePoint ??= (long)(i * BeatDuration * Sampler.SampleRate);
+                beat.QueuePoint ??= (long)(i * BeatDuration * (long)Sampler.SampleRate);
                 if (beat.Sampler.SampleRate != Sampler.SampleRate)
                     throw new InvalidOperationException($"All samplers must have the sample sample rate. Sampler for beat {i} has value {beat.Sampler.SampleRate}. Base sampler has {Sampler.SampleRate}");
 
@@ -72,7 +75,7 @@ namespace ErnstTech.SoundCore.Sampler
 
 
             var ms = new MemoryStream();
-            var writer = new WaveWriter(ms, Sampler.SampleRate);
+            var writer = new WaveWriter(ms, (int)Sampler.SampleRate);
             writer.Write(buffer.Length, buffer.Select(s => (float)s));
             ms.Position = 0;
 

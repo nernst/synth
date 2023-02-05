@@ -20,7 +20,6 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
     public IAsyncRelayCommand DeleteCommand { get; }
     public IAsyncRelayCommand HelpCommand { get;  }
 
-    Synthesizer synthesizer;
     Sound sound;
     Sound? original = null;
 
@@ -75,7 +74,7 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         {
             try
             {
-                _generatorFunc = synthesizer.Compile(this.Equation);
+                _generatorFunc = Synthesizer.Current.Compile(Equation);
             }
             catch
             { }
@@ -95,7 +94,6 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         DeleteCommand = new AsyncRelayCommand(Delete);
         HelpCommand = new AsyncRelayCommand(Help);
 
-        this.synthesizer = new Synthesizer();
         this.sound = sound;
 
         this.PropertyChanged += (o, e) =>
@@ -125,7 +123,7 @@ public partial class SoundViewModel : ObservableObject, IQueryAttributable
         if (generator == null)
             return;
 
-        var stream = synthesizer.Generate(generator, this.Duration);
+        var stream = Synthesizer.Current.Generate(generator, this.Duration);
         var manager = AudioManager.Current;
         var player = manager.CreatePlayer(stream);
         player.Play();

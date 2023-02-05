@@ -11,6 +11,7 @@ namespace GoSynth
             Routing.RegisterRoute(nameof(SoundsPage), typeof(SoundsPage));
             Routing.RegisterRoute(nameof(SoundPage), typeof(SoundPage));
             Routing.RegisterRoute(nameof(EquationHelp), typeof(EquationHelp));
+            Routing.RegisterRoute(nameof(LoopPage), typeof(LoopPage));
         }
     }
 }

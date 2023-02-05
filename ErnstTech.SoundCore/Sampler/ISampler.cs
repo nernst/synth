@@ -11,17 +11,17 @@ namespace ErnstTech.SoundCore.Sampler
         /// <summary>
         ///     The number of samples per second. Must be non-negative.
         /// </summary>
-        int SampleRate { get; }
+        SampleRate SampleRate { get; }
 
         /// <summary>
         ///     The number of bits per sample. Expected to be one of: 8, 16, 32.
         /// </summary>
-        int BitsPerSample { get; }
+        AudioBits BitsPerSample { get; }
 
         /// <summary>
         ///     The amount of time between samples, in seconds.
         /// </summary>
-        double TimeDelta { get { return 1.0 / SampleRate; } }
+        double TimeDelta { get => 1.0 / (int)SampleRate; }
 
         /// <summary>
         ///     The length of the sample in terms of number of samples. May be -1, if length cannot be determined.

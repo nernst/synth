@@ -8,15 +8,29 @@ namespace ErnstTech.SoundCore.Sampler
 {
     public class FuncSampler : ISampler
     {
-        public int SampleRate { get; init; } = 48_000;
+        public SampleRate SampleRate { get; init; }
 
-        public double TimeDelta => 1.0 / SampleRate;
+        public double TimeDelta { get; init; }
 
-        public int BitsPerSample { get; init; } = 32;
+        public AudioBits BitsPerSample { get; init; }
 
-        public long Length { get; set; } = -1;
+        public long Length { get; set; }
 
-        public Func<double, double>? SampleFunc { get; init; }
+        public Func<double, double> SampleFunc { get; init; }
+
+        public FuncSampler(SampleRate sampleRate, AudioBits bitsPerSample, Func<double, double> sampleFunc, long length)
+        {
+            if (!Enum.IsDefined(typeof(SampleRate), sampleRate))
+                throw new ArgumentException("Not a valid SampleRate.", nameof(sampleRate));
+            if (!Enum.IsDefined(typeof(AudioBits), bitsPerSample))
+                throw new ArgumentException("Not a valid AudioBits.", nameof(bitsPerSample));
+
+            SampleRate = sampleRate;
+            TimeDelta = 1.0 / (int)sampleRate;
+            BitsPerSample = bitsPerSample;
+            SampleFunc =  sampleFunc;
+            Length = length;
+        }
 
         public long GetSamples(double[] destination, long destOffset, long sampleStartOffset, long numSamples)
         {
@@ -30,6 +44,6 @@ namespace ErnstTech.SoundCore.Sampler
             return count;
         }
 
-        public double Sample(long sampleOffset) => SampleFunc!.Invoke(sampleOffset * TimeDelta);
+        public double Sample(long sampleOffset) => SampleFunc.Invoke(sampleOffset * TimeDelta);
     }
 }

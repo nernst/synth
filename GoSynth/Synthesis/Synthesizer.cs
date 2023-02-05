@@ -1,11 +1,15 @@
 ﻿using ErnstTech.SoundCore;
 using ErnstTech.SoundCore.Synthesis;
+using System.Runtime.CompilerServices;
 
 namespace GoSynth.Synthesis;
 
 public class Synthesizer
 {
-    ExpressionBuilder _Builder = new ExpressionBuilder(new ErnstTech.SoundCore.Synthesis.Expressions.Antlr.ExpressionParser());
+    readonly ExpressionBuilder _Builder = new(new ErnstTech.SoundCore.Synthesis.Expressions.Antlr.ExpressionParser());
+
+    static Synthesizer? _Current = null;
+    public static Synthesizer Current { get => _Current ??= new(); }
 
     static IEnumerable<float> ToEnumerable(int sampleRate, Func<double, double> func)
     {
@@ -16,7 +20,7 @@ public class Synthesizer
             yield return (float)func(count++ * delta);
     }
 
-    Stream Generate(int sampleRate, double duration, Func<double, double> func)
+   public  Stream Generate(int sampleRate, double duration, Func<double, double> func)
     {
         int nSamples = (int)(sampleRate * duration);
         var dataSize = nSamples * sizeof(float);
