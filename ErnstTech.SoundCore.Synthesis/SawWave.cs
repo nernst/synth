@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ErnstTech.SoundCore.Synthesis
 {
-    public class SawWave
+    public class SawWave : IGenerator
     {
         /// <summary>
         ///     Period, in seconds.
@@ -26,5 +26,7 @@ namespace ErnstTech.SoundCore.Synthesis
         }
 
         public Func<double, double> Adapt() => (double t) => Sample(t);
+
+        public double Generate(double time) => Sample(time);
     }
 }

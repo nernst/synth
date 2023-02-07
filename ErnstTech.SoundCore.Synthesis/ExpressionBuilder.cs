@@ -17,7 +17,11 @@ namespace ErnstTech.SoundCore.Synthesis
         public ExpressionBuilder(IExpressionParser parser, IExpressionCompiler? compiler = null)
         {
             _Parser = parser;
+#if USE_EXPRESSION_EVALUATOR
             _Compiler = compiler ?? new ExpressionEvaluator();
+#else
+            _Compiler = compiler ?? new Compiler();
+#endif
         }
 
         public Func<double, double> Compile(string expression)

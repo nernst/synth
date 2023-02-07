@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace ErnstTech.SoundCore.Synthesis
 {
-    public class SquareWave
+    public class SquareWave : IGenerator
     {
         public double DutyCycle { get; init; }
+
+        public SquareWave() : this(0.5) { }
         
-        public SquareWave(double dutyCycle = 0.5)
+        public SquareWave(double dutyCycle)
         {
             if (dutyCycle < 0 || dutyCycle > 1.0)
                 throw new ArgumentOutOfRangeException(nameof(dutyCycle), dutyCycle, "dutyCycle must be in the closed range [0, 1.0].");
@@ -27,5 +29,7 @@ namespace ErnstTech.SoundCore.Synthesis
 
         public Func<double, double> Adapt() => Sample;
         public Func<double, double> Adapt(Func<double, double> func) => (double t) => Sample(func(t));
+
+        public double Generate(double time) => Sample(time);
     }
 }

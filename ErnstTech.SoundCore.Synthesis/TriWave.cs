@@ -2,7 +2,7 @@
 
 namespace ErnstTech.SoundCore.Synthesis
 {
-    public class TriWave
+    public class TriWave : IGenerator
     {
         /// <summary>
         ///     Period, in seconds.
@@ -28,5 +28,7 @@ namespace ErnstTech.SoundCore.Synthesis
         }
 
         public Func<double, double> Adapt() => (double t) => Sample(t);
+
+        public double Generate(double time) => Sample(time);
     }
 }

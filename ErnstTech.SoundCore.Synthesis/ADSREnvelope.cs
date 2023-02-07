@@ -5,7 +5,7 @@ namespace ErnstTech.SoundCore.Synthesis
     /// <summary>
     ///     Applies an ADSR (Attack-Decay-Sustain-Release) envelope to 
     /// </summary>
-    public class ADSREnvelope
+    public class ADSREnvelope : IGenerator
     {
         /// <summary>
         ///     Maximum value of the attack.
@@ -96,5 +96,7 @@ namespace ErnstTech.SoundCore.Synthesis
         /// <param name="func">The function, parameterized by time, to be adapted.</param>
         /// <returns>A function that has been adapted to apply the envelope.</returns>
         public Func<double, double> Adapt(Func<double, double> func) => (double t) => ValueAt(t, func);
+
+        public double Generate(double time) => Factor(time);
     }
 }
